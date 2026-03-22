@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Times Tables Speed Challenge — Free Math Game | EduPlay</title>
+  <meta name="description" content="Race against the clock! How many multiplication problems can you solve in 60 seconds? Free times tables speed challenge for kids.">
+  <meta name="keywords" content="times tables speed test, multiplication speed challenge, math race, kids math game, free">
+  <meta property="og:title" content="Times Tables Speed Challenge — EduPlay">
+  <meta property="og:description" content="60-second multiplication speed challenge! How many can you get right?">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://dannycranmer.github.io/eduplay/times-tables.html">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Times Tables Speed Challenge — EduPlay",
+    "description": "60-second multiplication speed challenge for kids. Free math game.",
+    "url": "https://dannycranmer.github.io/eduplay/times-tables.html",
+    "applicationCategory": "EducationalApplication",
+    "isAccessibleForFree": true
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">🎮</span> EduPlay</a>
+      <button class="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="multiplication.html">Multiply</a>
+        <a href="addition.html">Add &amp; Sub</a>
+        <a href="number-bonds.html">Bonds</a>
+        <a href="times-tables.html" class="active">Speed</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="game-container">
+    <div class="game-header">
+      <h1>⚡ Times Tables Speed Challenge</h1>
+      <p>How many can you solve in 60 seconds?</p>
+    </div>
+
+    <div class="difficulty-selector" id="diff-selector">
+      <button class="diff-btn" data-diff="easy">Easy<br><small>2×–5× tables</small></button>
+      <button class="diff-btn" data-diff="medium">Medium<br><small>2×–9× tables</small></button>
+      <button class="diff-btn" data-diff="hard">Hard<br><small>2×–12× tables</small></button>
+    </div>
+
+    <div id="game-area">
+      <div class="start-screen" id="start-screen">
+        <h2>Pick a difficulty, then hit Start!</h2>
+        <p>You have 60 seconds. Type your answer and press Enter as fast as you can. Every correct answer scores a point!</p>
+        <button class="btn btn-primary btn-lg" id="start-btn" disabled>Start Challenge!</button>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">Ad space — coming soon</div>
+
+    <div class="parent-info">
+      <h2>For Parents &amp; Teachers</h2>
+      <p>Speed challenges build fluency by encouraging rapid recall of multiplication facts:</p>
+      <ul>
+        <li><strong>Easy:</strong> 2×–5× tables (Grades 2-3)</li>
+        <li><strong>Medium:</strong> 2×–9× tables (Grades 3-4)</li>
+        <li><strong>Hard:</strong> 2×–12× tables (Grades 4-6)</li>
+        <li>60-second timer creates urgency without being stressful</li>
+        <li>Wrong answers are shown briefly so children can learn from mistakes</li>
+        <li>Encourages beating their own score rather than competing with others</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="multiplication.html">Multiplication</a>
+      <a href="addition.html">Addition</a>
+      <a href="number-bonds.html">Number Bonds</a>
+      <a href="times-tables.html">Speed Challenge</a>
+    </div>
+    <p>&copy; 2026 EduPlay — Free educational games for kids.</p>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script>
+  (function() {
+    const GAME_TIME = 60;
+    const RANGES = { easy: [2, 5], medium: [2, 9], hard: [2, 12] };
+    let tracker, difficulty, timerInterval, timeLeft, currentQ;
+
+    const startBtn = document.getElementById('start-btn');
+
+    document.getElementById('diff-selector').addEventListener('click', e => {
+      const btn = e.target.closest('.diff-btn');
+      if (!btn) return;
+      document.querySelectorAll('#diff-selector .diff-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      difficulty = btn.dataset.diff;
+      startBtn.disabled = false;
+    });
+
+    startBtn.addEventListener('click', startGame);
+
+    function nextQuestion() {
+      const [minTable, maxTable] = RANGES[difficulty];
+      const a = randInt(minTable, maxTable);
+      const b = randInt(1, 12);
+      return { a, b, answer: a * b };
+    }
+
+    function startGame() {
+      tracker = new ScoreTracker();
+      tracker.start();
+      timeLeft = GAME_TIME;
+      currentQ = nextQuestion();
+      renderGame();
+      timerInterval = setInterval(tick, 1000);
+    }
+
+    function tick() {
+      timeLeft--;
+      const timerEl = document.getElementById('timer');
+      if (timerEl) timerEl.textContent = formatTime(timeLeft);
+      const progEl = document.getElementById('progress');
+      if (progEl) progEl.style.width = Math.round(((GAME_TIME - timeLeft) / GAME_TIME) * 100) + '%';
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        endGame();
+      }
+    }
+
+    function renderGame() {
+      const area = document.getElementById('game-area');
+      area.innerHTML = `
+        <div class="score-bar">
+          <span class="score-correct">✅ <span id="score-correct">0</span></span>
+          <span class="score-wrong">❌ <span id="score-wrong">0</span></span>
+          <span class="score-streak">🔥 <span id="score-streak">0</span></span>
+          <span class="score-timer">⏱️ <span id="timer">${formatTime(timeLeft)}</span></span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div class="question-area" id="q-area">
+          <div class="question-text" id="q-text">${currentQ.a} × ${currentQ.b} = ?</div>
+          <input type="number" class="answer-input" id="answer" inputmode="numeric" pattern="[0-9]*" autofocus autocomplete="off">
+          <div class="feedback" id="feedback"></div>
+        </div>
+      `;
+      const input = document.getElementById('answer');
+      input.focus();
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') submitAnswer();
+      });
+    }
+
+    function submitAnswer() {
+      const input = document.getElementById('answer');
+      const val = parseInt(input.value);
+      if (isNaN(val)) return;
+
+      const fb = document.getElementById('feedback');
+      const qArea = document.getElementById('q-area');
+
+      if (val === currentQ.answer) {
+        tracker.recordCorrect();
+        fb.className = 'feedback feedback-correct';
+        fb.textContent = '✓';
+        animateEl(qArea, 'animate-pop');
+      } else {
+        tracker.recordWrong();
+        fb.className = 'feedback feedback-wrong';
+        fb.textContent = `${currentQ.a}×${currentQ.b}=${currentQ.answer}`;
+        animateEl(qArea, 'animate-shake');
+      }
+
+      updateScoreDisplay(tracker);
+      // Next question immediately
+      setTimeout(() => {
+        if (timeLeft <= 0) return;
+        currentQ = nextQuestion();
+        const qText = document.getElementById('q-text');
+        const newInput = document.getElementById('answer');
+        const newFb = document.getElementById('feedback');
+        if (qText) qText.textContent = `${currentQ.a} × ${currentQ.b} = ?`;
+        if (newInput) { newInput.value = ''; newInput.disabled = false; newInput.focus(); }
+        if (newFb) newFb.textContent = '';
+      }, 300);
+    }
+
+    function endGame() {
+      const area = document.getElementById('game-area');
+      // Calculate speed
+      const perMinute = tracker.total;
+      area.innerHTML = `
+        <div class="results-screen animate-slide-up">
+          <div class="results-emoji">${tracker.getEmoji()}</div>
+          <h2>${tracker.getMessage()}</h2>
+          <div class="results-stats">
+            <div class="stat-card">
+              <div class="stat-value">${tracker.correct}</div>
+              <div class="stat-label">Correct</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${tracker.total}</div>
+              <div class="stat-label">Attempted</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${tracker.accuracy}%</div>
+              <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${tracker.bestStreak}</div>
+              <div class="stat-label">Best Streak</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${perMinute}/min</div>
+              <div class="stat-label">Speed</div>
+            </div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-primary btn-lg" onclick="location.reload()">Try Again</button>
+            <a href="index.html" class="btn btn-secondary btn-lg">More Games</a>
+          </div>
+        </div>
+      `;
+    }
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="6" fill="#C084FC"/>
+  <text x="16" y="23" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="18" fill="white">E</text>
+  <circle cx="25" cy="7" r="4" fill="#FACC15"/>
+  <text x="25" y="9.5" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="7" fill="#92400E">★</text>
+</svg>

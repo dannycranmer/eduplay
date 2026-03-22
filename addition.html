@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Addition &amp; Subtraction Practice — Free Math Game | EduPlay</title>
+  <meta name="description" content="Practice addition and subtraction with this free, fun math game for kids ages 4-10. Three difficulty levels. No accounts, no tracking.">
+  <meta name="keywords" content="addition game, subtraction game, math practice, kids math, free educational game">
+  <meta property="og:title" content="Addition & Subtraction Practice — EduPlay">
+  <meta property="og:description" content="Fun addition and subtraction practice for kids. Three difficulty levels, completely free.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://dannycranmer.github.io/eduplay/addition.html">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Addition & Subtraction Practice — EduPlay",
+    "description": "Practice addition and subtraction. Free math game for kids ages 4-10.",
+    "url": "https://dannycranmer.github.io/eduplay/addition.html",
+    "applicationCategory": "EducationalApplication",
+    "isAccessibleForFree": true
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">🎮</span> EduPlay</a>
+      <button class="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="multiplication.html">Multiply</a>
+        <a href="addition.html" class="active">Add &amp; Sub</a>
+        <a href="number-bonds.html">Bonds</a>
+        <a href="times-tables.html">Speed</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="game-container">
+    <div class="game-header">
+      <h1>➕ Addition &amp; Subtraction</h1>
+      <p>Practice adding and subtracting numbers!</p>
+    </div>
+
+    <div class="difficulty-selector" id="diff-selector">
+      <button class="diff-btn" data-diff="easy">Easy<br><small>Numbers to 10</small></button>
+      <button class="diff-btn" data-diff="medium">Medium<br><small>Numbers to 50</small></button>
+      <button class="diff-btn" data-diff="hard">Hard<br><small>Numbers to 100</small></button>
+    </div>
+
+    <div class="score-bar">
+      <span class="score-correct">✅ <span id="score-correct">0</span></span>
+      <span class="score-wrong">❌ <span id="score-wrong">0</span></span>
+      <span class="score-streak">🔥 <span id="score-streak">0</span></span>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+    <div id="game-area">
+      <div class="start-screen">
+        <h2>Pick a difficulty to start!</h2>
+        <p>You'll get 10 addition and subtraction problems. Type your answer and press Enter.</p>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">Ad space — coming soon</div>
+
+    <div class="parent-info">
+      <h2>For Parents &amp; Teachers</h2>
+      <p>This game builds fluency with addition and subtraction facts:</p>
+      <ul>
+        <li><strong>Easy:</strong> Addition/subtraction within 10 (Kindergarten-Grade 1)</li>
+        <li><strong>Medium:</strong> Numbers up to 50 with carrying/borrowing (Grades 2-3)</li>
+        <li><strong>Hard:</strong> Numbers up to 100 (Grades 3-4)</li>
+        <li>Subtraction problems never produce negative answers</li>
+        <li>Type-in answers build recall (no guessing from choices)</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="multiplication.html">Multiplication</a>
+      <a href="addition.html">Addition</a>
+      <a href="number-bonds.html">Number Bonds</a>
+      <a href="times-tables.html">Speed Challenge</a>
+    </div>
+    <p>&copy; 2026 EduPlay — Free educational games for kids.</p>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script>
+  (function() {
+    const TOTAL = 10;
+    const RANGES = { easy: 10, medium: 50, hard: 100 };
+    let tracker, difficulty, questions, qi;
+
+    document.getElementById('diff-selector').addEventListener('click', e => {
+      const btn = e.target.closest('.diff-btn');
+      if (!btn) return;
+      document.querySelectorAll('#diff-selector .diff-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      difficulty = btn.dataset.diff;
+      startGame();
+    });
+
+    function genQ() {
+      const max = RANGES[difficulty];
+      questions = [];
+      for (let i = 0; i < TOTAL; i++) {
+        const isAdd = Math.random() < 0.5;
+        if (isAdd) {
+          const a = randInt(1, max - 1);
+          const b = randInt(1, max - a);
+          questions.push({ text: `${a} + ${b}`, answer: a + b });
+        } else {
+          const a = randInt(2, max);
+          const b = randInt(1, a);
+          questions.push({ text: `${a} − ${b}`, answer: a - b });
+        }
+      }
+    }
+
+    function startGame() {
+      tracker = new ScoreTracker();
+      tracker.start();
+      qi = 0;
+      genQ();
+      showQ();
+    }
+
+    function showQ() {
+      if (qi >= TOTAL) { showResults(tracker, 'game-area'); return; }
+      const q = questions[qi];
+      document.getElementById('progress').style.width = Math.round((qi / TOTAL) * 100) + '%';
+
+      const area = document.getElementById('game-area');
+      area.innerHTML = `
+        <div class="question-area animate-pop">
+          <div class="question-text">${q.text} = ?</div>
+          <input type="number" class="answer-input" id="answer" inputmode="numeric" pattern="[0-9]*" autofocus autocomplete="off">
+          <div class="feedback" id="feedback"></div>
+          <div style="margin-top:0.8rem;font-size:0.75rem;color:#94A3B8;">Press Enter to submit</div>
+        </div>
+      `;
+
+      const input = document.getElementById('answer');
+      input.focus();
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleAnswer(input, q.answer);
+      });
+    }
+
+    function handleAnswer(input, correct) {
+      if (input.disabled) return;
+      const val = parseInt(input.value);
+      if (isNaN(val)) return;
+      input.disabled = true;
+      const fb = document.getElementById('feedback');
+
+      if (val === correct) {
+        tracker.recordCorrect();
+        input.classList.add('correct');
+        fb.className = 'feedback feedback-correct';
+        fb.textContent = ['Great!', 'Awesome!', 'Correct!', 'Yes!', 'Perfect!'][randInt(0, 4)];
+        animateEl(input, 'animate-pop');
+      } else {
+        tracker.recordWrong();
+        input.classList.add('wrong');
+        animateEl(input, 'animate-shake');
+        fb.className = 'feedback feedback-wrong';
+        fb.textContent = `The answer is ${correct}`;
+      }
+
+      updateScoreDisplay(tracker);
+      setTimeout(() => { qi++; showQ(); }, 1000);
+    }
+  })();
+  </script>
+</body>
+</html>

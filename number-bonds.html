@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Bonds Game — Free Math Game | EduPlay</title>
+  <meta name="description" content="Learn number bonds with this free, interactive math game. Find the missing part! Perfect for kids ages 4-8 building mental math fluency.">
+  <meta name="keywords" content="number bonds, number bonds game, mental math, kids math game, free educational game">
+  <meta property="og:title" content="Number Bonds Game — EduPlay">
+  <meta property="og:description" content="Fun number bonds practice for kids. Find the missing part to complete the bond!">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://dannycranmer.github.io/eduplay/number-bonds.html">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Number Bonds Game — EduPlay",
+    "description": "Learn number bonds — find the missing part. Free math game for kids ages 4-8.",
+    "url": "https://dannycranmer.github.io/eduplay/number-bonds.html",
+    "applicationCategory": "EducationalApplication",
+    "isAccessibleForFree": true
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">🎮</span> EduPlay</a>
+      <button class="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="multiplication.html">Multiply</a>
+        <a href="addition.html">Add &amp; Sub</a>
+        <a href="number-bonds.html" class="active">Bonds</a>
+        <a href="times-tables.html">Speed</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="game-container">
+    <div class="game-header">
+      <h1>🔗 Number Bonds</h1>
+      <p>Find the missing number to complete the bond!</p>
+    </div>
+
+    <div class="difficulty-selector" id="diff-selector">
+      <button class="diff-btn" data-diff="easy">Easy<br><small>Bonds to 10</small></button>
+      <button class="diff-btn" data-diff="medium">Medium<br><small>Bonds to 20</small></button>
+      <button class="diff-btn" data-diff="hard">Hard<br><small>Bonds to 50</small></button>
+    </div>
+
+    <div class="score-bar">
+      <span class="score-correct">✅ <span id="score-correct">0</span></span>
+      <span class="score-wrong">❌ <span id="score-wrong">0</span></span>
+      <span class="score-streak">🔥 <span id="score-streak">0</span></span>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+    <div id="game-area">
+      <div class="start-screen">
+        <h2>Pick a level to start!</h2>
+        <p>You'll see two parts that make a whole. Find the missing part! Tap the right answer.</p>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">Ad space — coming soon</div>
+
+    <div class="parent-info">
+      <h2>For Parents &amp; Teachers</h2>
+      <p>Number bonds are a foundational concept for mental arithmetic. They show how numbers can be split into parts:</p>
+      <ul>
+        <li><strong>Easy:</strong> Bonds to 10 — the building blocks (e.g., 7 + ? = 10)</li>
+        <li><strong>Medium:</strong> Bonds to 20 — bridging through 10</li>
+        <li><strong>Hard:</strong> Bonds to 50 — more challenging splits</li>
+        <li>Visual circle layout helps children see the part-whole relationship</li>
+        <li>Multiple choice reduces frustration for younger learners</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="multiplication.html">Multiplication</a>
+      <a href="addition.html">Addition</a>
+      <a href="number-bonds.html">Number Bonds</a>
+      <a href="times-tables.html">Speed Challenge</a>
+    </div>
+    <p>&copy; 2026 EduPlay — Free educational games for kids.</p>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script>
+  (function() {
+    const TOTAL = 10;
+    const MAXES = { easy: 10, medium: 20, hard: 50 };
+    let tracker, difficulty, questions, qi;
+
+    document.getElementById('diff-selector').addEventListener('click', e => {
+      const btn = e.target.closest('.diff-btn');
+      if (!btn) return;
+      document.querySelectorAll('#diff-selector .diff-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      difficulty = btn.dataset.diff;
+      startGame();
+    });
+
+    function genQ() {
+      const max = MAXES[difficulty];
+      questions = [];
+      for (let i = 0; i < TOTAL; i++) {
+        const total = randInt(Math.min(3, max), max);
+        const part = randInt(1, total - 1);
+        const missing = total - part;
+        // Randomly choose which part is missing
+        const missingIsFirst = Math.random() < 0.5;
+        questions.push({ total, part, missing, missingIsFirst });
+      }
+    }
+
+    function startGame() {
+      tracker = new ScoreTracker();
+      tracker.start();
+      qi = 0;
+      genQ();
+      showQ();
+    }
+
+    function showQ() {
+      if (qi >= TOTAL) { showResults(tracker, 'game-area'); return; }
+      const q = questions[qi];
+      document.getElementById('progress').style.width = Math.round((qi / TOTAL) * 100) + '%';
+
+      const leftVal = q.missingIsFirst ? '?' : q.part;
+      const rightVal = q.missingIsFirst ? (q.total - q.missing) : '?';
+      const leftClass = q.missingIsFirst ? 'bond-unknown' : 'bond-part';
+      const rightClass = q.missingIsFirst ? 'bond-part' : 'bond-unknown';
+
+      // For display: if missingIsFirst, left=?, right=part (total-missing), meaning left should show ?
+      // Actually let me reclarify: total = part + missing
+      // If missingIsFirst: show [?] + [part] = [total], answer is missing
+      // If !missingIsFirst: show [part] + [?] = [total], answer is missing
+      const showLeft = q.missingIsFirst ? '?' : q.part;
+      const showRight = q.missingIsFirst ? q.part : '?';
+
+      const spread = Math.max(3, Math.floor(q.total * 0.3));
+      const choices = generateChoices(q.missing, 4, spread);
+
+      const area = document.getElementById('game-area');
+      area.innerHTML = `
+        <div class="question-area animate-pop">
+          <div class="bond-visual">
+            <div class="bond-circle ${q.missingIsFirst ? 'bond-unknown' : 'bond-part'}">${showLeft}</div>
+            <div class="bond-plus">+</div>
+            <div class="bond-circle ${q.missingIsFirst ? 'bond-part' : 'bond-unknown'}">${showRight}</div>
+            <div class="bond-equals">=</div>
+            <div class="bond-circle bond-total">${q.total}</div>
+          </div>
+          <div style="font-size:0.85rem;color:#64748B;margin-bottom:1rem;">What's the missing number?</div>
+          <div class="answer-choices" id="choices">
+            ${choices.map(c => `<button class="choice-btn" data-val="${c}">${c}</button>`).join('')}
+          </div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+      `;
+
+      document.getElementById('choices').addEventListener('click', e => {
+        const btn = e.target.closest('.choice-btn');
+        if (!btn || btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+        handleAnswer(parseInt(btn.dataset.val), q.missing, btn);
+      });
+    }
+
+    function handleAnswer(selected, correct, btn) {
+      const fb = document.getElementById('feedback');
+      const allBtns = document.querySelectorAll('.choice-btn');
+
+      if (selected === correct) {
+        tracker.recordCorrect();
+        btn.classList.add('correct');
+        fb.className = 'feedback feedback-correct';
+        fb.textContent = ['Perfect!', 'You got it!', 'Correct!', 'Amazing!'][randInt(0, 3)];
+        animateEl(btn, 'animate-pop');
+      } else {
+        tracker.recordWrong();
+        btn.classList.add('wrong');
+        animateEl(btn, 'animate-shake');
+        allBtns.forEach(b => { if (parseInt(b.dataset.val) === correct) b.classList.add('correct'); });
+        fb.className = 'feedback feedback-wrong';
+        fb.textContent = `The missing number is ${correct}`;
+      }
+
+      updateScoreDisplay(tracker);
+      allBtns.forEach(b => b.style.pointerEvents = 'none');
+      setTimeout(() => { qi++; showQ(); }, 900);
+    }
+  })();
+  </script>
+</body>
+</html>
