@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counting &amp; Skip Counting Game — Free Math Game for Kids | EduPlay</title>
+  <meta name="description" content="Free counting game for kids ages 4-6. Count objects, find what comes next, and practice skip counting by 2s, 5s, and 10s. No tracking, no accounts.">
+  <meta name="keywords" content="counting game, skip counting, count objects, learn to count, preschool math, kindergarten math, free educational game">
+  <meta property="og:title" content="Counting &amp; Skip Counting Game — EduPlay">
+  <meta property="og:description" content="Fun counting practice for young children. Count objects, sequences, and skip counting!">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://dannycranmer.github.io/eduplay/counting.html">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Counting & Skip Counting Game — EduPlay",
+    "description": "Learn counting and skip counting. Free math game for kids ages 4-6.",
+    "url": "https://dannycranmer.github.io/eduplay/counting.html",
+    "applicationCategory": "EducationalApplication",
+    "isAccessibleForFree": true
+  }
+  </script>
+  <style>
+    .mode-selector {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .mode-btn {
+      padding: 0.8rem 1rem;
+      border: 3px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      min-width: 120px;
+    }
+    .mode-btn:hover { border-color: var(--cyan); }
+    .mode-btn.active { background: var(--cyan); color: #fff; border-color: var(--cyan); }
+
+    .objects-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+      min-height: 80px;
+    }
+    .object-item {
+      font-size: 2.4rem;
+      animation: pop 0.3s ease-out both;
+      line-height: 1;
+    }
+    @media (max-width: 480px) {
+      .object-item { font-size: 1.8rem; }
+    }
+
+    .sequence-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .seq-num {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 900;
+      background: #EFF6FF;
+      border: 3px solid var(--blue);
+      color: var(--blue);
+    }
+    .seq-missing {
+      background: #FEF3C7;
+      border-color: var(--orange);
+      color: var(--orange);
+      font-size: 1.8rem;
+    }
+    @media (max-width: 480px) {
+      .seq-num { width: 46px; height: 46px; font-size: 1.2rem; }
+    }
+
+    .counting-choices {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.6rem;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    .counting-choices .choice-btn {
+      min-height: 64px;
+      font-size: 1.5rem;
+      border-radius: var(--radius-sm);
+    }
+    @media (max-width: 480px) {
+      .counting-choices { max-width: 300px; gap: 0.4rem; }
+      .counting-choices .choice-btn { min-height: 54px; font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">🎮</span> EduPlay</a>
+      <button class="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="multiplication.html">Multiply</a>
+        <a href="division.html">Divide</a>
+        <a href="addition.html">Add &amp; Sub</a>
+        <a href="number-bonds.html">Bonds</a>
+        <a href="times-tables.html">Speed</a>
+        <a href="counting.html" class="active">Counting</a>
+        <a href="phonics.html">Phonics</a>
+        <a href="spelling.html">Spelling</a>
+        <a href="sight-words.html">Sight Words</a>
+      <a href="word-problems.html">Word Problems</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="game-container">
+    <div class="game-header">
+      <h1>🔢 Counting &amp; Skip Counting</h1>
+      <p>Count objects, find what comes next, and skip count!</p>
+    </div>
+
+    <div class="mode-selector" id="mode-selector">
+      <button class="mode-btn" data-mode="objects">🌟 Count<br>Objects</button>
+      <button class="mode-btn" data-mode="next">🔢 What Comes<br>Next?</button>
+      <button class="mode-btn" data-mode="skip">🐰 Skip<br>Counting</button>
+    </div>
+
+    <div class="score-bar">
+      <span class="score-correct">✅ <span id="score-correct">0</span></span>
+      <span class="score-wrong">❌ <span id="score-wrong">0</span></span>
+      <span class="score-streak">🔥 <span id="score-streak">0</span></span>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+    <div id="game-area">
+      <div class="start-screen">
+        <h2>Pick a mode to start!</h2>
+        <p>Count colorful objects, find the next number in a sequence, or practice skip counting by 2s, 5s, and 10s!</p>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">Ad space — coming soon</div>
+
+    <div class="parent-info">
+      <h2>For Parents &amp; Teachers</h2>
+      <p>Counting is one of the earliest math skills children develop. This game covers three key areas:</p>
+      <ul>
+        <li><strong>Count Objects (1-20):</strong> Builds one-to-one correspondence — the foundation of number sense</li>
+        <li><strong>What Comes Next?:</strong> Reinforces number order and sequence recognition</li>
+        <li><strong>Skip Counting:</strong> Counting by 2s, 5s, and 10s — a precursor to multiplication</li>
+        <li>Extra-large buttons designed for small fingers on tablets and phones</li>
+        <li>Multiple choice format keeps frustration low for young learners</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="multiplication.html">Multiplication</a>
+      <a href="division.html">Division</a>
+      <a href="addition.html">Addition</a>
+      <a href="number-bonds.html">Number Bonds</a>
+      <a href="times-tables.html">Speed Challenge</a>
+      <a href="counting.html">Counting</a>
+      <a href="phonics.html">Phonics</a>
+      <a href="spelling.html">Spelling</a>
+      <a href="sight-words.html">Sight Words</a>
+      <a href="word-problems.html">Word Problems</a>
+    </div>
+    <p>&copy; 2026 EduPlay — Free educational games for kids.</p>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script>
+  (function() {
+    const TOTAL = 10;
+    const EMOJIS = ['⭐','🌟','💛','❤️','💜','🐟','🦋','🌸','🍎','🔵','🟢','🟡','🐢','🐱','🌺','🎈'];
+    let tracker, mode, questions, qi;
+
+    document.getElementById('mode-selector').addEventListener('click', function(e) {
+      var btn = e.target.closest('.mode-btn');
+      if (!btn) return;
+      document.querySelectorAll('#mode-selector .mode-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      mode = btn.dataset.mode;
+      startGame();
+    });
+
+    function startGame() {
+      tracker = new ScoreTracker();
+      tracker.start();
+      qi = 0;
+      questions = [];
+      if (mode === 'objects') genObjectsQ();
+      else if (mode === 'next') genNextQ();
+      else genSkipQ();
+      showQ();
+    }
+
+    function genObjectsQ() {
+      var used = {};
+      for (var i = 0; i < TOTAL; i++) {
+        var count;
+        var attempts = 0;
+        do {
+          count = randInt(1, 20);
+          attempts++;
+        } while (used[count] && attempts < 50);
+        used[count] = true;
+        var emoji = EMOJIS[randInt(0, EMOJIS.length - 1)];
+        questions.push({ type: 'objects', count: count, emoji: emoji });
+      }
+    }
+
+    function genNextQ() {
+      for (var i = 0; i < TOTAL; i++) {
+        var start = randInt(1, 16);
+        var len = randInt(3, 5);
+        var seq = [];
+        for (var j = 0; j < len; j++) seq.push(start + j);
+        var answer = start + len;
+        questions.push({ type: 'next', seq: seq, answer: answer });
+      }
+    }
+
+    function genSkipQ() {
+      var skips = [2, 5, 10];
+      for (var i = 0; i < TOTAL; i++) {
+        var by = skips[i % 3];
+        var startMult = randInt(0, by === 10 ? 5 : (by === 5 ? 8 : 10));
+        var start = startMult * by;
+        var seqLen = 5;
+        var seq = [];
+        for (var j = 0; j < seqLen; j++) seq.push(start + j * by);
+        var missingIdx = randInt(1, seqLen - 1);
+        var answer = seq[missingIdx];
+        questions.push({ type: 'skip', seq: seq, missingIdx: missingIdx, answer: answer, by: by });
+      }
+    }
+
+    function showQ() {
+      if (qi >= TOTAL) { showResults(tracker, 'game-area'); return; }
+      var q = questions[qi];
+      document.getElementById('progress').style.width = Math.round((qi / TOTAL) * 100) + '%';
+
+      if (q.type === 'objects') showObjectsQ(q);
+      else if (q.type === 'next') showNextQ(q);
+      else showSkipQ(q);
+    }
+
+    function showObjectsQ(q) {
+      var objects = '';
+      for (var i = 0; i < q.count; i++) {
+        objects += '<span class="object-item" style="animation-delay:' + (i * 0.04) + 's">' + q.emoji + '</span>';
+      }
+
+      var choices = generateChoices(q.count, 4, 4);
+      // Ensure no choice is 0 or negative
+      choices = choices.map(function(c) { return c < 1 ? randInt(1, 20) : c; });
+      // Ensure correct answer is still there
+      if (choices.indexOf(q.count) === -1) choices[0] = q.count;
+      choices = shuffle(choices);
+
+      var area = document.getElementById('game-area');
+      area.innerHTML =
+        '<div class="question-area animate-pop">' +
+          '<div style="font-size:1.1rem;font-weight:800;margin-bottom:0.8rem;color:var(--text);">How many ' + q.emoji + ' do you see?</div>' +
+          '<div class="objects-grid">' + objects + '</div>' +
+          '<div class="counting-choices" id="choices">' +
+            choices.map(function(c) { return '<button class="choice-btn" data-val="' + c + '">' + c + '</button>'; }).join('') +
+          '</div>' +
+          '<div class="feedback" id="feedback"></div>' +
+        '</div>';
+
+      bindChoices(q.count);
+    }
+
+    function showNextQ(q) {
+      var seqHTML = '';
+      for (var i = 0; i < q.seq.length; i++) {
+        seqHTML += '<div class="seq-num">' + q.seq[i] + '</div>';
+      }
+      seqHTML += '<div class="seq-num seq-missing">?</div>';
+
+      var choices = generateChoices(q.answer, 4, 3);
+      choices = choices.map(function(c) { return c < 1 ? q.answer + randInt(1, 5) : c; });
+      if (choices.indexOf(q.answer) === -1) choices[0] = q.answer;
+      choices = shuffle(choices);
+
+      var area = document.getElementById('game-area');
+      area.innerHTML =
+        '<div class="question-area animate-pop">' +
+          '<div style="font-size:1.1rem;font-weight:800;margin-bottom:0.8rem;color:var(--text);">What number comes next?</div>' +
+          '<div class="sequence-row">' + seqHTML + '</div>' +
+          '<div class="counting-choices" id="choices">' +
+            choices.map(function(c) { return '<button class="choice-btn" data-val="' + c + '">' + c + '</button>'; }).join('') +
+          '</div>' +
+          '<div class="feedback" id="feedback"></div>' +
+        '</div>';
+
+      bindChoices(q.answer);
+    }
+
+    function showSkipQ(q) {
+      var seqHTML = '';
+      for (var i = 0; i < q.seq.length; i++) {
+        if (i === q.missingIdx) {
+          seqHTML += '<div class="seq-num seq-missing">?</div>';
+        } else {
+          seqHTML += '<div class="seq-num">' + q.seq[i] + '</div>';
+        }
+      }
+
+      var spread = Math.max(q.by, 4);
+      var choices = generateChoices(q.answer, 4, spread);
+      // Make wrong answers multiples of the skip value for plausibility
+      choices = choices.map(function(c, idx) {
+        if (c === q.answer) return c;
+        var offset = randInt(1, 3) * q.by * (Math.random() < 0.5 ? 1 : -1);
+        var alt = q.answer + offset;
+        return alt > 0 && alt !== q.answer ? alt : q.answer + q.by * (idx + 1);
+      });
+      // Deduplicate and ensure correct is present
+      var seen = {};
+      var deduped = [];
+      choices.forEach(function(c) {
+        if (!seen[c]) { seen[c] = true; deduped.push(c); }
+      });
+      while (deduped.length < 4) {
+        var extra = q.answer + randInt(1, 5) * q.by;
+        if (!seen[extra]) { seen[extra] = true; deduped.push(extra); }
+      }
+      if (deduped.indexOf(q.answer) === -1) deduped[0] = q.answer;
+      deduped = shuffle(deduped.slice(0, 4));
+
+      var area = document.getElementById('game-area');
+      area.innerHTML =
+        '<div class="question-area animate-pop">' +
+          '<div style="font-size:1.1rem;font-weight:800;margin-bottom:0.5rem;color:var(--text);">Count by ' + q.by + 's — find the missing number!</div>' +
+          '<div class="sequence-row">' + seqHTML + '</div>' +
+          '<div class="counting-choices" id="choices">' +
+            deduped.map(function(c) { return '<button class="choice-btn" data-val="' + c + '">' + c + '</button>'; }).join('') +
+          '</div>' +
+          '<div class="feedback" id="feedback"></div>' +
+        '</div>';
+
+      bindChoices(q.answer);
+    }
+
+    function bindChoices(correct) {
+      document.getElementById('choices').addEventListener('click', function(e) {
+        var btn = e.target.closest('.choice-btn');
+        if (!btn || btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+        handleAnswer(parseInt(btn.dataset.val), correct, btn);
+      });
+    }
+
+    function handleAnswer(selected, correct, btn) {
+      var fb = document.getElementById('feedback');
+      var allBtns = document.querySelectorAll('.choice-btn');
+
+      if (selected === correct) {
+        tracker.recordCorrect();
+        btn.classList.add('correct');
+        fb.className = 'feedback feedback-correct';
+        fb.textContent = ['Super!', 'You got it!', 'Correct!', 'Amazing!', 'Yay!'][randInt(0, 4)];
+        animateEl(btn, 'animate-pop');
+      } else {
+        tracker.recordWrong();
+        btn.classList.add('wrong');
+        animateEl(btn, 'animate-shake');
+        allBtns.forEach(function(b) { if (parseInt(b.dataset.val) === correct) b.classList.add('correct'); });
+        fb.className = 'feedback feedback-wrong';
+        fb.textContent = 'The answer is ' + correct;
+      }
+
+      updateScoreDisplay(tracker);
+      allBtns.forEach(function(b) { b.style.pointerEvents = 'none'; });
+      setTimeout(function() { qi++; showQ(); }, 1000);
+    }
+  })();
+  </script>
+</body>
+</html>
