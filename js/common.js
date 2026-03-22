@@ -1,33 +1,33 @@
 /* EduPlay — Shared utilities */
 
-// Mobile nav — full overlay with slide-in panel
+// Mobile nav — full-screen takeover (single .open class)
 function initNav() {
   const hamburger = document.querySelector('.hamburger');
   const mobileNav = document.querySelector('.mobile-nav');
   const overlay = document.querySelector('.nav-overlay');
   if (!hamburger || !mobileNav) return;
 
+  let isOpen = false;
+
   function openNav() {
+    if (isOpen) return;
+    isOpen = true;
     hamburger.classList.add('active');
     mobileNav.classList.add('open');
-    if (overlay) overlay.classList.add('visible');
+    if (overlay) overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
-    // Trigger reflow then animate in
-    void mobileNav.offsetWidth;
-    mobileNav.classList.add('visible');
   }
 
   function closeNav() {
+    if (!isOpen) return;
+    isOpen = false;
     hamburger.classList.remove('active');
-    mobileNav.classList.remove('visible');
-    if (overlay) overlay.classList.remove('visible');
+    mobileNav.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
     document.body.style.overflow = '';
-    setTimeout(() => mobileNav.classList.remove('open'), 400);
   }
 
-  hamburger.addEventListener('click', () => {
-    mobileNav.classList.contains('open') ? closeNav() : openNav();
-  });
+  hamburger.addEventListener('click', () => isOpen ? closeNav() : openNav());
 
   // Close on overlay tap
   if (overlay) overlay.addEventListener('click', closeNav);
@@ -37,13 +37,11 @@ function initNav() {
   if (closeBtn) closeBtn.addEventListener('click', closeNav);
 
   // Close on link click
-  mobileNav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', closeNav);
-  });
+  mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
 
   // Close on Escape key
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && mobileNav.classList.contains('open')) closeNav();
+    if (e.key === 'Escape' && isOpen) closeNav();
   });
 }
 
