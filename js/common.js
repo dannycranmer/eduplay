@@ -1,18 +1,50 @@
 /* EduPlay — Shared utilities */
 
-// Mobile nav toggle
+// Mobile nav — full overlay with slide-in panel
 function initNav() {
   const hamburger = document.querySelector('.hamburger');
-  const navLinks = document.querySelector('.nav-links');
-  if (hamburger && navLinks) {
-    hamburger.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-    });
-    // Close on link click
-    navLinks.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => navLinks.classList.remove('open'));
-    });
+  const mobileNav = document.querySelector('.mobile-nav');
+  const overlay = document.querySelector('.nav-overlay');
+  if (!hamburger || !mobileNav) return;
+
+  function openNav() {
+    hamburger.classList.add('active');
+    mobileNav.classList.add('open');
+    if (overlay) overlay.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+    // Trigger reflow then animate in
+    void mobileNav.offsetWidth;
+    mobileNav.classList.add('visible');
   }
+
+  function closeNav() {
+    hamburger.classList.remove('active');
+    mobileNav.classList.remove('visible');
+    if (overlay) overlay.classList.remove('visible');
+    document.body.style.overflow = '';
+    setTimeout(() => mobileNav.classList.remove('open'), 400);
+  }
+
+  hamburger.addEventListener('click', () => {
+    mobileNav.classList.contains('open') ? closeNav() : openNav();
+  });
+
+  // Close on overlay tap
+  if (overlay) overlay.addEventListener('click', closeNav);
+
+  // Close on X button
+  const closeBtn = mobileNav.querySelector('.mobile-nav-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeNav);
+
+  // Close on link click
+  mobileNav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', closeNav);
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && mobileNav.classList.contains('open')) closeNav();
+  });
 }
 
 // Score tracker (session only)
