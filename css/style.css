@@ -527,18 +527,6 @@ nav a:hover, nav a.active {
   transition: width 0.3s ease;
 }
 
-/* ===== AD PLACEHOLDER ===== */
-.ad-placeholder {
-  background: #F8FAFC;
-  border: 2px dashed #CBD5E1;
-  border-radius: var(--radius-sm);
-  padding: 1rem;
-  text-align: center;
-  color: #94A3B8;
-  font-size: 0.7rem;
-  margin: 1.5rem 0;
-}
-
 /* ===== PARENT INFO ===== */
 .parent-info {
   background: #F8FAFC;
