@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spelling Game — Type the Word! Free for Kids | EduPlay</title>
-  <meta name="description" content="Free spelling game for kids ages 5-10. See a picture, type the word! Practice spelling with animals, colors, food, and more. No accounts, no tracking.">
-  <meta name="keywords" content="spelling game, kids spelling, spelling practice, learn to spell, free spelling game, educational game">
-  <meta property="og:title" content="Spelling Game — Type the Word! | EduPlay">
-  <meta property="og:description" content="Fun, free spelling game for kids. See the picture, type the word — no accounts needed!">
+  <title>Spelling Bee Game — Free Spelling Practice for Kids | EduPlay</title>
+  <meta name="description" content="Free spelling bee game for kids ages 4-12. See the word, memorize it, spell it from memory! Uses Dolch and Fry sight word lists. No accounts, no tracking.">
+  <meta name="keywords" content="spelling bee game, spelling practice, sight words, Dolch words, Fry words, free spelling game, kids spelling">
+  <meta property="og:title" content="Spelling Bee Game — EduPlay">
+  <meta property="og:description" content="See the word, memorize it, spell it from memory! Free spelling bee practice for kids.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="canonical" href="https://dannycranmer.github.io/eduplay/spelling.html">
   <link rel="stylesheet" href="css/style.css">
@@ -15,109 +15,103 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Spelling Game — Type the Word! | EduPlay",
-    "description": "Free spelling game for kids. See a picture, type the correct spelling.",
+    "name": "Spelling Bee Game — EduPlay",
+    "description": "Free spelling bee game for kids. See the word, memorize it, spell it from memory!",
     "url": "https://dannycranmer.github.io/eduplay/spelling.html",
     "applicationCategory": "EducationalApplication",
     "audience": {
       "@type": "EducationalAudience",
       "educationalRole": "student",
-      "suggestedMinAge": 5,
-      "suggestedMaxAge": 10
+      "suggestedMinAge": 4,
+      "suggestedMaxAge": 12
     },
     "isAccessibleForFree": true
   }
   </script>
   <style>
-    .spelling-emoji {
-      font-size: 5rem;
-      margin-bottom: 0.5rem;
-      line-height: 1;
-    }
-    .spelling-hint {
-      font-size: 1rem;
-      color: var(--text-light);
-      margin-bottom: 0.3rem;
-    }
-    .spelling-category {
-      font-size: 0.75rem;
+    .word-display {
+      font-size: 3.2rem;
+      font-weight: 900;
       color: var(--purple);
-      font-weight: 700;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-    .letter-blanks {
-      display: flex;
-      justify-content: center;
-      gap: 0.3rem;
-      margin-bottom: 1.2rem;
-      flex-wrap: wrap;
-    }
-    .letter-blank {
-      width: 38px;
-      height: 44px;
-      border: 3px solid #E2E8F0;
-      border-radius: 8px;
+      min-height: 5rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      background: #fff;
-      transition: all 0.2s;
+      letter-spacing: 4px;
+      text-transform: lowercase;
     }
-    .letter-blank.filled { border-color: var(--purple); color: var(--purple); }
-    .letter-blank.correct-letter { border-color: var(--green); background: #F0FDF4; color: #16A34A; }
-    .letter-blank.wrong-letter { border-color: var(--red); background: #FEF2F2; color: #DC2626; }
-    .spelling-input-row {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      align-items: center;
+    .countdown-num {
+      font-size: 4.5rem;
+      font-weight: 900;
+      color: var(--orange);
     }
+    .bee-icon {
+      font-size: 3rem;
+      margin-right: 0.3rem;
+    }
+    .word-reveal {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      margin-top: 0.8rem;
+    }
+    .word-reveal .letter-correct { color: var(--green); }
+    .word-reveal .letter-wrong { color: var(--red); text-decoration: underline; }
+    .word-reveal .letter-missing { color: var(--red); opacity: 0.5; }
     .spelling-input {
       font-family: inherit;
-      font-size: 1.4rem;
+      font-size: 1.8rem;
       font-weight: 800;
       text-align: center;
-      text-transform: uppercase;
-      width: 200px;
-      padding: 0.6rem;
+      width: 300px;
+      max-width: 90%;
+      padding: 0.7rem 1rem;
       border: 3px solid #E2E8F0;
       border-radius: var(--radius-sm);
       outline: none;
-      transition: border-color 0.2s;
-      letter-spacing: 0.15em;
+      transition: border-color 0.2s, background 0.2s;
+      letter-spacing: 3px;
     }
     .spelling-input:focus { border-color: var(--purple); }
-    .submit-btn {
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      color: #fff;
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .submit-btn:hover { transform: translateY(-2px); }
-    .show-hint-btn {
-      margin-top: 0.8rem;
-      padding: 0.4rem 1rem;
-      border: 2px solid #E2E8F0;
-      border-radius: var(--radius-sm);
-      background: #fff;
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: 700;
+    .spelling-input.correct { border-color: var(--green); background: #F0FDF4; }
+    .spelling-input.wrong { border-color: var(--red); background: #FEF2F2; }
+    .phase-label {
+      font-size: 0.85rem;
       color: var(--text-light);
-      cursor: pointer;
-      transition: all 0.2s;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
     }
-    .show-hint-btn:hover { border-color: var(--purple); color: var(--purple); }
+    .round-info {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    @keyframes fadeInScale {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    .animate-word { animation: fadeInScale 0.5s ease-out; }
+    .animate-pulse { animation: pulse 0.6s ease-in-out; }
+    .memorize-bar {
+      width: 80%;
+      max-width: 300px;
+      height: 8px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 0.8rem auto 0;
+    }
+    .memorize-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--cyan));
+      border-radius: 999px;
+      transition: width 0.1s linear;
+    }
   </style>
 </head>
 <body>
@@ -129,6 +123,7 @@
       </button>
       <div class="nav-links">
         <a href="multiplication.html">Multiply</a>
+        <a href="division.html">Divide</a>
         <a href="addition.html">Add &amp; Sub</a>
         <a href="number-bonds.html">Bonds</a>
         <a href="times-tables.html">Speed</a>
@@ -141,14 +136,14 @@
 
   <div class="game-container">
     <div class="game-header">
-      <h1>📝 Spelling Practice</h1>
-      <p>See the picture, type the word!</p>
+      <h1>🐝 Spelling Bee</h1>
+      <p>See the word, memorize it, spell it from memory!</p>
     </div>
 
-    <div class="difficulty-selector" id="level-selector">
-      <button class="diff-btn" data-level="easy">Easy<br><small>3-4 Letters</small></button>
-      <button class="diff-btn" data-level="medium">Medium<br><small>5-6 Letters</small></button>
-      <button class="diff-btn" data-level="hard">Hard<br><small>7+ Letters</small></button>
+    <div class="difficulty-selector" id="difficulty-selector">
+      <button class="diff-btn" data-level="easy">Easy (K-1)</button>
+      <button class="diff-btn" data-level="medium">Medium (2-3)</button>
+      <button class="diff-btn" data-level="hard">Hard (4-6)</button>
     </div>
 
     <div class="score-bar">
@@ -161,8 +156,8 @@
 
     <div id="game-area">
       <div class="start-screen">
-        <h2>Pick a level above to start!</h2>
-        <p>You'll see a picture and need to type the correct spelling. 10 words per round.</p>
+        <h2>Choose a difficulty level to start!</h2>
+        <p>A word will appear on screen for 2 seconds. Memorize it, then spell it from memory! 10 words per round.</p>
       </div>
     </div>
 
@@ -170,13 +165,13 @@
 
     <div class="parent-info">
       <h2>For Parents &amp; Teachers</h2>
-      <p>This spelling game builds word recognition and spelling accuracy through visual associations. Children see an emoji picture and type the corresponding word.</p>
+      <p>This spelling bee game builds visual memory and spelling accuracy. Children see a word briefly, then must recall and type it correctly — strengthening the connection between seeing and spelling.</p>
       <ul>
-        <li><strong>Easy:</strong> Common 3-4 letter words (cat, dog, sun, cup)</li>
-        <li><strong>Medium:</strong> 5-6 letter words (horse, grape, cloud, heart)</li>
-        <li><strong>Hard:</strong> 7+ letter words (elephant, butterfly, umbrella)</li>
-        <li>Letter blanks show word length as a visual scaffold</li>
-        <li>"Show Hint" reveals the first letter if stuck</li>
+        <li><strong>Easy (K-1):</strong> 30 high-frequency Dolch sight words (the, and, cat, dog, etc.)</li>
+        <li><strong>Medium (2-3):</strong> 30 words for developing readers (because, friend, people, etc.)</li>
+        <li><strong>Hard (4-6):</strong> 30 challenging words (beautiful, necessary, environment, etc.)</li>
+        <li>Words display for 2 seconds with a countdown before the spelling prompt</li>
+        <li>Letter-by-letter feedback highlights exactly which letters were correct or wrong</li>
         <li>No data is saved or sent anywhere</li>
       </ul>
     </div>
@@ -186,11 +181,12 @@
     <div class="footer-links">
       <a href="index.html">Home</a>
       <a href="multiplication.html">Multiplication</a>
+      <a href="division.html">Division</a>
       <a href="addition.html">Addition</a>
       <a href="number-bonds.html">Number Bonds</a>
       <a href="times-tables.html">Speed Challenge</a>
       <a href="phonics.html">Phonics</a>
-      <a href="spelling.html">Spelling</a>
+      <a href="spelling.html">Spelling Bee</a>
       <a href="sight-words.html">Sight Words</a>
     </div>
     <p>&copy; 2026 EduPlay — Free educational games for kids.</p>
@@ -200,174 +196,203 @@
   <script>
   (function() {
     const TOTAL_QUESTIONS = 10;
+    const SHOW_DURATION = 2000;
 
     const WORDS = {
       easy: [
-        {w:'cat',e:'🐱',c:'Animals'},{w:'dog',e:'🐕',c:'Animals'},{w:'pig',e:'🐷',c:'Animals'},
-        {w:'bee',e:'🐝',c:'Animals'},{w:'ant',e:'🐜',c:'Animals'},{w:'hen',e:'🐔',c:'Animals'},
-        {w:'fox',e:'🦊',c:'Animals'},{w:'cow',e:'🐄',c:'Animals'},{w:'bat',e:'🦇',c:'Animals'},
-        {w:'sun',e:'☀️',c:'Nature'},{w:'map',e:'🗺️',c:'Things'},{w:'cup',e:'☕',c:'Food'},
-        {w:'hat',e:'🎩',c:'Things'},{w:'bus',e:'🚌',c:'Things'},{w:'pen',e:'🖊️',c:'Things'},
-        {w:'egg',e:'🥚',c:'Food'},{w:'nut',e:'🥜',c:'Food'},{w:'jam',e:'🍯',c:'Food'},
-        {w:'pie',e:'🥧',c:'Food'},{w:'ice',e:'🧊',c:'Food'},{w:'red',e:'🔴',c:'Colors'},
-        {w:'key',e:'🔑',c:'Things'},{w:'box',e:'📦',c:'Things'},{w:'bed',e:'🛏️',c:'Things'},
-        {w:'car',e:'🚗',c:'Things'},{w:'fish',e:'🐟',c:'Animals'},{w:'frog',e:'🐸',c:'Animals'},
-        {w:'bell',e:'🔔',c:'Things'},{w:'star',e:'⭐',c:'Nature'},{w:'cake',e:'🎂',c:'Food'},
+        'the', 'and', 'is', 'see', 'cat', 'dog', 'run', 'big', 'red', 'play',
+        'come', 'look', 'said', 'here', 'help', 'for', 'not', 'you', 'was', 'with',
+        'all', 'are', 'but', 'had', 'has', 'her', 'him', 'his', 'how', 'its'
       ],
       medium: [
-        {w:'horse',e:'🐴',c:'Animals'},{w:'mouse',e:'🐭',c:'Animals'},{w:'snake',e:'🐍',c:'Animals'},
-        {w:'whale',e:'🐋',c:'Animals'},{w:'tiger',e:'🐯',c:'Animals'},{w:'eagle',e:'🦅',c:'Animals'},
-        {w:'grape',e:'🍇',c:'Food'},{w:'lemon',e:'🍋',c:'Food'},{w:'peach',e:'🍑',c:'Food'},
-        {w:'pizza',e:'🍕',c:'Food'},{w:'bread',e:'🍞',c:'Food'},{w:'candy',e:'🍬',c:'Food'},
-        {w:'cloud',e:'☁️',c:'Nature'},{w:'flame',e:'🔥',c:'Nature'},{w:'water',e:'💧',c:'Nature'},
-        {w:'heart',e:'❤️',c:'Things'},{w:'watch',e:'⌚',c:'Things'},{w:'train',e:'🚂',c:'Things'},
-        {w:'house',e:'🏠',c:'Things'},{w:'chair',e:'🪑',c:'Things'},{w:'globe',e:'🌍',c:'Things'},
-        {w:'crown',e:'👑',c:'Things'},{w:'green',e:'💚',c:'Colors'},{w:'black',e:'⬛',c:'Colors'},
-        {w:'white',e:'⬜',c:'Colors'},{w:'ocean',e:'🌊',c:'Nature'},{w:'truck',e:'🚛',c:'Things'},
-        {w:'panda',e:'🐼',c:'Animals'},{w:'zebra',e:'🦓',c:'Animals'},{w:'koala',e:'🐨',c:'Animals'},
+        'because', 'friend', 'people', 'before', 'animal', 'around', 'between',
+        'different', 'important', 'sentence', 'together', 'thought', 'follow',
+        'answer', 'learn', 'school', 'mother', 'father', 'country', 'picture',
+        'should', 'world', 'below', 'study', 'always', 'large', 'letter',
+        'change', 'begin', 'story'
       ],
       hard: [
-        {w:'elephant',e:'🐘',c:'Animals'},{w:'giraffe',e:'🦒',c:'Animals'},{w:'penguin',e:'🐧',c:'Animals'},
-        {w:'dolphin',e:'🐬',c:'Animals'},{w:'octopus',e:'🐙',c:'Animals'},{w:'chicken',e:'🐔',c:'Animals'},
-        {w:'butterfly',e:'🦋',c:'Animals'},{w:'dinosaur',e:'🦕',c:'Animals'},{w:'gorilla',e:'🦍',c:'Animals'},
-        {w:'umbrella',e:'☂️',c:'Things'},{w:'diamond',e:'💎',c:'Things'},{w:'rainbow',e:'🌈',c:'Nature'},
-        {w:'volcano',e:'🌋',c:'Nature'},{w:'tornado',e:'🌪️',c:'Nature'},{w:'mountain',e:'🏔️',c:'Nature'},
-        {w:'popcorn',e:'🍿',c:'Food'},{w:'pumpkin',e:'🎃',c:'Food'},{w:'avocado',e:'🥑',c:'Food'},
-        {w:'bicycle',e:'🚲',c:'Things'},{w:'trumpet',e:'🎺',c:'Things'},{w:'teacher',e:'👩‍🏫',c:'People'},
-        {w:'princess',e:'👸',c:'People'},{w:'snowman',e:'⛄',c:'Things'},{w:'guitar',e:'🎸',c:'Things'},
-        {w:'kitchen',e:'🍳',c:'Things'},{w:'monster',e:'👹',c:'Things'},{w:'rocket',e:'🚀',c:'Things'},
-        {w:'sunflower',e:'🌻',c:'Nature'},{w:'sandwich',e:'🥪',c:'Food'},{w:'mushroom',e:'🍄',c:'Food'},
+        'beautiful', 'necessary', 'environment', 'schedule', 'separate',
+        'definitely', 'occurrence', 'restaurant', 'accommodate', 'rhythm',
+        'conscience', 'privilege', 'accomplish', 'appreciate', 'beginning',
+        'committee', 'disappoint', 'experience', 'government', 'immediately',
+        'knowledge', 'literature', 'mysterious', 'particular', 'recommend',
+        'recognize', 'refrigerator', 'temperature', 'throughout', 'vocabulary'
       ]
     };
 
-    let tracker, questions, questionIndex, currentLevel;
+    let tracker, currentLevel, words, wordIndex, inputLocked;
 
-    document.getElementById('level-selector').addEventListener('click', e => {
-      const btn = e.target.closest('.diff-btn');
+    document.getElementById('difficulty-selector').addEventListener('click', function(e) {
+      var btn = e.target.closest('.diff-btn');
       if (!btn) return;
-      document.querySelectorAll('#level-selector .diff-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#difficulty-selector .diff-btn').forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
       currentLevel = btn.dataset.level;
       startGame();
     });
 
-    function generateQuestions() {
-      const pool = [...WORDS[currentLevel]];
+    function pickWords() {
+      var pool = WORDS[currentLevel].slice();
       shuffle(pool);
-      questions = pool.slice(0, TOTAL_QUESTIONS);
+      return pool.slice(0, TOTAL_QUESTIONS);
     }
 
     function startGame() {
       tracker = new ScoreTracker();
       tracker.start();
-      questionIndex = 0;
-      generateQuestions();
-      showQuestion();
+      wordIndex = 0;
+      words = pickWords();
+      inputLocked = false;
+      showWordPhase();
     }
 
-    function showQuestion() {
-      if (questionIndex >= TOTAL_QUESTIONS) {
+    function showWordPhase() {
+      if (wordIndex >= TOTAL_QUESTIONS) {
         showResults(tracker, 'game-area');
         return;
       }
-      const q = questions[questionIndex];
-      const pct = Math.round((questionIndex / TOTAL_QUESTIONS) * 100);
+
+      var word = words[wordIndex];
+      var pct = Math.round((wordIndex / TOTAL_QUESTIONS) * 100);
       document.getElementById('progress').style.width = pct + '%';
 
-      const blanks = q.w.split('').map(() => '<div class="letter-blank"></div>').join('');
-      const area = document.getElementById('game-area');
-      area.innerHTML = `
-        <div class="question-area animate-pop">
-          <div class="spelling-emoji">${q.e}</div>
-          <div class="spelling-hint">Spell this word!</div>
-          <div class="spelling-category">${q.c}</div>
-          <div class="letter-blanks" id="blanks">${blanks}</div>
-          <div class="spelling-input-row">
-            <input type="text" class="spelling-input" id="spell-input" maxlength="${q.w.length}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type here...">
-            <button class="submit-btn" id="submit-btn">Check</button>
-          </div>
-          <button class="show-hint-btn" id="hint-btn">💡 Show Hint</button>
-          <div class="feedback" id="feedback"></div>
-        </div>
-      `;
+      var area = document.getElementById('game-area');
+      area.innerHTML =
+        '<div class="question-area animate-pop">' +
+          '<div class="round-info">Word ' + (wordIndex + 1) + ' of ' + TOTAL_QUESTIONS + '</div>' +
+          '<div class="phase-label">Memorize this word!</div>' +
+          '<div class="word-display animate-word" id="word-display">' + word + '</div>' +
+          '<div class="memorize-bar"><div class="memorize-fill" id="memorize-fill" style="width:100%"></div></div>' +
+        '</div>';
 
-      const input = document.getElementById('spell-input');
-      const submitBtn = document.getElementById('submit-btn');
-      const hintBtn = document.getElementById('hint-btn');
+      // Animate the memorize bar draining
+      var startTime = Date.now();
+      var fillEl = document.getElementById('memorize-fill');
+      var drainInterval = setInterval(function() {
+        var elapsed = Date.now() - startTime;
+        var remaining = Math.max(0, 100 - (elapsed / SHOW_DURATION) * 100);
+        if (fillEl) fillEl.style.width = remaining + '%';
+        if (remaining <= 0) clearInterval(drainInterval);
+      }, 50);
+
+      setTimeout(function() {
+        clearInterval(drainInterval);
+        startCountdown();
+      }, SHOW_DURATION);
+    }
+
+    function startCountdown() {
+      var count = 3;
+      var display = document.getElementById('word-display');
+      var phaseLabel = document.querySelector('.phase-label');
+      if (!display) return;
+
+      display.innerHTML = '<span class="countdown-num animate-pulse">' + count + '</span>';
+      if (phaseLabel) phaseLabel.textContent = 'Get ready to spell it...';
+
+      // Hide the memorize bar
+      var bar = document.querySelector('.memorize-bar');
+      if (bar) bar.style.display = 'none';
+
+      var interval = setInterval(function() {
+        count--;
+        if (count > 0) {
+          display.innerHTML = '<span class="countdown-num animate-pulse">' + count + '</span>';
+        } else {
+          clearInterval(interval);
+          showInputPhase();
+        }
+      }, 600);
+    }
+
+    function showInputPhase() {
+      var word = words[wordIndex];
+      var area = document.getElementById('game-area');
+      inputLocked = false;
+
+      area.innerHTML =
+        '<div class="question-area animate-pop">' +
+          '<div class="round-info">Word ' + (wordIndex + 1) + ' of ' + TOTAL_QUESTIONS + '</div>' +
+          '<div class="phase-label">Type the word you saw!</div>' +
+          '<div class="word-display"><span class="bee-icon">🐝</span> ?</div>' +
+          '<div style="margin-top:1rem;">' +
+            '<input type="text" class="spelling-input" id="spell-input" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">' +
+          '</div>' +
+          '<div style="margin-top:0.8rem;">' +
+            '<button class="btn btn-primary" id="submit-btn">Check Spelling</button>' +
+          '</div>' +
+          '<div class="feedback" id="feedback"></div>' +
+          '<div id="word-reveal"></div>' +
+        '</div>';
+
+      var input = document.getElementById('spell-input');
+      var submitBtn = document.getElementById('submit-btn');
+
       input.focus();
 
-      input.addEventListener('input', () => {
-        updateBlanks(input.value, q.w);
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') checkSpelling();
       });
 
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') checkSpelling(q);
-      });
+      submitBtn.addEventListener('click', checkSpelling);
+    }
 
-      submitBtn.addEventListener('click', () => checkSpelling(q));
+    function checkSpelling() {
+      if (inputLocked) return;
 
-      hintBtn.addEventListener('click', () => {
-        input.value = q.w[0];
-        updateBlanks(input.value, q.w);
+      var input = document.getElementById('spell-input');
+      var typed = input.value.trim().toLowerCase();
+
+      if (typed === '') {
         input.focus();
-        hintBtn.style.display = 'none';
-      });
-    }
-
-    function updateBlanks(typed, word) {
-      const blankEls = document.querySelectorAll('.letter-blank');
-      for (let i = 0; i < word.length; i++) {
-        if (i < typed.length) {
-          blankEls[i].textContent = typed[i];
-          blankEls[i].classList.add('filled');
-        } else {
-          blankEls[i].textContent = '';
-          blankEls[i].classList.remove('filled');
-        }
+        return;
       }
-    }
 
-    function checkSpelling(q) {
-      const input = document.getElementById('spell-input');
-      const typed = input.value.toLowerCase().trim();
-      const feedback = document.getElementById('feedback');
-      const blankEls = document.querySelectorAll('.letter-blank');
+      inputLocked = true;
+      var word = words[wordIndex];
+      var feedback = document.getElementById('feedback');
+      var reveal = document.getElementById('word-reveal');
+      var isCorrect = (typed === word);
 
-      if (!typed) return;
+      if (isCorrect) {
+        tracker.recordCorrect();
+        input.classList.add('correct');
+        feedback.className = 'feedback feedback-correct';
+        feedback.textContent = ['Perfect!', 'You got it!', 'Amazing!', 'Great spelling!', 'Correct!'][randInt(0, 4)];
+        animateEl(input, 'animate-pop');
+      } else {
+        tracker.recordWrong();
+        input.classList.add('wrong');
+        animateEl(input, 'animate-shake');
+        feedback.className = 'feedback feedback-wrong';
+        feedback.textContent = 'Not quite! The correct spelling is:';
+
+        // Letter-by-letter comparison
+        var revealHTML = '';
+        var maxLen = Math.max(word.length, typed.length);
+        for (var i = 0; i < word.length; i++) {
+          var correctLetter = word[i];
+          var typedLetter = i < typed.length ? typed[i] : '';
+          if (typedLetter === correctLetter) {
+            revealHTML += '<span class="letter-correct">' + correctLetter + '</span>';
+          } else if (typedLetter === '') {
+            revealHTML += '<span class="letter-missing">' + correctLetter + '</span>';
+          } else {
+            revealHTML += '<span class="letter-wrong">' + correctLetter + '</span>';
+          }
+        }
+        reveal.innerHTML = '<div class="word-reveal animate-pop">' + revealHTML + '</div>';
+      }
 
       input.disabled = true;
       document.getElementById('submit-btn').disabled = true;
-      const hintBtn = document.getElementById('hint-btn');
-      if (hintBtn) hintBtn.style.display = 'none';
-
-      if (typed === q.w.toLowerCase()) {
-        tracker.recordCorrect();
-        blankEls.forEach(b => b.classList.add('correct-letter'));
-        feedback.className = 'feedback feedback-correct';
-        feedback.textContent = ['Perfect spelling!', 'You got it!', 'Excellent!', 'Great job!'][randInt(0, 3)];
-        animateEl(document.querySelector('.question-area'), 'animate-pop');
-      } else {
-        tracker.recordWrong();
-        // Show which letters are wrong
-        for (let i = 0; i < q.w.length; i++) {
-          if (i < typed.length && typed[i] === q.w[i].toLowerCase()) {
-            blankEls[i].classList.add('correct-letter');
-          } else {
-            blankEls[i].textContent = q.w[i];
-            blankEls[i].classList.add('wrong-letter');
-          }
-        }
-        feedback.className = 'feedback feedback-wrong';
-        feedback.textContent = `The correct spelling is: ${q.w.toUpperCase()}`;
-        animateEl(document.querySelector('.question-area'), 'animate-shake');
-      }
-
       updateScoreDisplay(tracker);
 
-      setTimeout(() => {
-        questionIndex++;
-        showQuestion();
-      }, 1500);
+      setTimeout(function() {
+        wordIndex++;
+        showWordPhase();
+      }, isCorrect ? 1200 : 2500);
     }
   })();
   </script>
