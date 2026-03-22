@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sight Words Game — Flash Card Practice | Free for Kids | EduPlay</title>
+  <meta name="description" content="Free sight words game for kids ages 4-8. Practice Dolch and Fry sight words with flash cards and timed recognition. No accounts, no tracking — COPPA-safe.">
+  <meta name="keywords" content="sight words game, sight word practice, Dolch words, Fry words, flash cards, reading practice, free educational game">
+  <meta property="og:title" content="Sight Words Game — Flash Card Practice | EduPlay">
+  <meta property="og:description" content="Fun, free sight words game. Practice common words with flash cards — no accounts needed!">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://dannycranmer.github.io/eduplay/sight-words.html">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Sight Words Game — Flash Card Practice | EduPlay",
+    "description": "Free sight words flash card game for kids. Practice Dolch and Fry common words.",
+    "url": "https://dannycranmer.github.io/eduplay/sight-words.html",
+    "applicationCategory": "EducationalApplication",
+    "audience": {
+      "@type": "EducationalAudience",
+      "educationalRole": "student",
+      "suggestedMinAge": 4,
+      "suggestedMaxAge": 8
+    },
+    "isAccessibleForFree": true
+  }
+  </script>
+  <style>
+    .flash-card {
+      background: linear-gradient(135deg, #F5F3FF, #EFF6FF);
+      border: 4px solid var(--purple);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin-bottom: 1.2rem;
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .flash-word {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--purple);
+      letter-spacing: 0.05em;
+    }
+    .flash-timer-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--green), var(--cyan));
+      border-radius: 0 0 var(--radius) var(--radius);
+      transition: width linear;
+    }
+    .sight-choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .sight-btn {
+      padding: 1rem;
+      border: 3px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-family: inherit;
+      font-size: 1.3rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+      min-height: 60px;
+    }
+    .sight-btn:hover { border-color: var(--purple); transform: scale(1.03); }
+    .sight-btn:active { transform: scale(0.97); }
+    .sight-btn.correct { background: #DCFCE7; border-color: var(--green); }
+    .sight-btn.wrong { background: #FEE2E2; border-color: var(--red); }
+    .mode-selector {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .mode-btn {
+      padding: 0.5rem 1rem;
+      border: 2px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn:hover { border-color: var(--purple); }
+    .mode-btn.active { background: var(--cyan); color: #fff; border-color: var(--cyan); }
+    .flash-hidden {
+      color: transparent;
+      text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+    }
+    .flash-instruction {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      text-align: center;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">🎮</span> EduPlay</a>
+      <button class="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="multiplication.html">Multiply</a>
+        <a href="addition.html">Add &amp; Sub</a>
+        <a href="number-bonds.html">Bonds</a>
+        <a href="times-tables.html">Speed</a>
+        <a href="phonics.html">Phonics</a>
+        <a href="spelling.html">Spelling</a>
+        <a href="sight-words.html" class="active">Sight Words</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="game-container">
+    <div class="game-header">
+      <h1>👀 Sight Words</h1>
+      <p>Read the word, then find it fast!</p>
+    </div>
+
+    <div class="difficulty-selector" id="level-selector">
+      <button class="diff-btn" data-level="pre-k">Pre-K<br><small>Basic Words</small></button>
+      <button class="diff-btn" data-level="kindergarten">Kindergarten<br><small>Dolch List</small></button>
+      <button class="diff-btn" data-level="grade1">Grade 1-2<br><small>Fry Words</small></button>
+    </div>
+
+    <div class="mode-selector" id="mode-selector">
+      <button class="mode-btn active" data-mode="untimed">Untimed</button>
+      <button class="mode-btn" data-mode="timed">Timed (3s flash)</button>
+    </div>
+
+    <div class="score-bar">
+      <span class="score-correct">✅ <span id="score-correct">0</span></span>
+      <span class="score-wrong">❌ <span id="score-wrong">0</span></span>
+      <span class="score-streak">🔥 <span id="score-streak">0</span></span>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+    <div id="game-area">
+      <div class="start-screen">
+        <h2>Pick a level above to start!</h2>
+        <p>A word will flash on screen. Find it among the choices! 10 words per round.</p>
+        <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-light)">Try <strong>Timed mode</strong> — the word disappears after 3 seconds for an extra challenge!</p>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">Ad space — coming soon</div>
+
+    <div class="parent-info">
+      <h2>For Parents &amp; Teachers</h2>
+      <p>Sight words (also called high-frequency words) are the most common words in English text. Recognizing them instantly helps children read fluently without sounding out every word.</p>
+      <ul>
+        <li><strong>Pre-K:</strong> 20 basic words (I, a, the, is, it, in, etc.)</li>
+        <li><strong>Kindergarten:</strong> Dolch Kindergarten list (all, am, are, at, ate, etc.)</li>
+        <li><strong>Grade 1-2:</strong> Fry first 100 words (about, been, could, each, etc.)</li>
+        <li><strong>Timed mode:</strong> Word flashes for 3 seconds then hides — builds instant recognition</li>
+        <li>Based on the Dolch and Fry sight word lists used in schools</li>
+        <li>No data is saved or sent anywhere</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="multiplication.html">Multiplication</a>
+      <a href="addition.html">Addition</a>
+      <a href="number-bonds.html">Number Bonds</a>
+      <a href="times-tables.html">Speed Challenge</a>
+      <a href="phonics.html">Phonics</a>
+      <a href="spelling.html">Spelling</a>
+      <a href="sight-words.html">Sight Words</a>
+    </div>
+    <p>&copy; 2026 EduPlay — Free educational games for kids.</p>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script>
+  (function() {
+    const TOTAL_QUESTIONS = 10;
+
+    const WORD_LISTS = {
+      'pre-k': [
+        'I','a','the','is','it','in','my','to','we','go',
+        'me','he','no','so','up','am','an','at','do','if',
+        'on','or','us','be','by','of'
+      ],
+      'kindergarten': [
+        'all','am','are','at','ate','be','black','brown','but','came',
+        'did','do','eat','four','get','good','have','he','into','like',
+        'must','new','no','now','on','our','out','please','pretty','ran',
+        'ride','saw','say','she','so','soon','that','there','they','this',
+        'too','under','want','was','well','went','what','white','who','will',
+        'with','yes'
+      ],
+      'grade1': [
+        'about','after','again','an','any','as','ask','by','could','every',
+        'fly','from','give','going','had','has','her','him','his','how',
+        'just','know','let','live','may','of','old','once','open','over',
+        'put','round','some','stop','take','thank','them','then','think','walk',
+        'were','when','work','would','write','your','always','around','because','been',
+        'before','best','both','buy','call','cold','does','don\'t','fast','first',
+        'five','found','gave','goes','green','its','made','many','off','or',
+        'pull','read','right','sing','sit','sleep','tell','their','these','those',
+        'upon','us','use','very','wash','which','why','wish','far','full',
+        'grow','hold','hot','hurt','if','keep','kind','laugh','light','long',
+        'much','myself','never','only','own','pick','seven','shall','show','six'
+      ]
+    };
+
+    // Similar-looking distractor words by level
+    const DISTRACTORS = {
+      'pre-k': [
+        'I','a','the','is','it','in','my','to','we','go',
+        'me','he','no','so','up','am','an','at','do','if',
+        'on','or','us','be','by','of'
+      ],
+      'kindergarten': [
+        'all','am','are','at','ate','be','but','came','did','do',
+        'eat','get','good','have','he','into','like','must','new','no',
+        'now','on','our','out','ran','ride','saw','say','she','so',
+        'soon','that','there','they','this','too','want','was','well','went',
+        'what','who','will','with','yes','black','brown','four','pretty','under','white','please'
+      ],
+      'grade1': [
+        'about','after','again','any','ask','could','every','from','give','going',
+        'had','has','her','him','his','how','just','know','let','live',
+        'may','old','once','open','over','put','round','some','stop','take',
+        'thank','them','then','think','walk','were','when','work','would','write',
+        'your','always','around','because','been','before','both','does','fast','first',
+        'found','goes','made','many','read','right','these','those','very','which'
+      ]
+    };
+
+    let tracker, questions, questionIndex, currentLevel, timedMode, hideTimeout;
+
+    document.getElementById('level-selector').addEventListener('click', e => {
+      const btn = e.target.closest('.diff-btn');
+      if (!btn) return;
+      document.querySelectorAll('#level-selector .diff-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentLevel = btn.dataset.level;
+      startGame();
+    });
+
+    document.getElementById('mode-selector').addEventListener('click', e => {
+      const btn = e.target.closest('.mode-btn');
+      if (!btn) return;
+      document.querySelectorAll('#mode-selector .mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      timedMode = btn.dataset.mode === 'timed';
+      if (currentLevel) startGame();
+    });
+
+    function generateQuestions() {
+      const pool = [...WORD_LISTS[currentLevel]];
+      shuffle(pool);
+      questions = pool.slice(0, TOTAL_QUESTIONS).map(word => {
+        // Pick 3 distractors that are different from the correct word
+        const distractorPool = DISTRACTORS[currentLevel].filter(w => w !== word);
+        shuffle(distractorPool);
+        return { word, distractors: distractorPool.slice(0, 3) };
+      });
+    }
+
+    function startGame() {
+      if (hideTimeout) clearTimeout(hideTimeout);
+      tracker = new ScoreTracker();
+      tracker.start();
+      questionIndex = 0;
+      generateQuestions();
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if (hideTimeout) clearTimeout(hideTimeout);
+      if (questionIndex >= TOTAL_QUESTIONS) {
+        showResults(tracker, 'game-area');
+        return;
+      }
+      const q = questions[questionIndex];
+      const pct = Math.round((questionIndex / TOTAL_QUESTIONS) * 100);
+      document.getElementById('progress').style.width = pct + '%';
+
+      const choices = shuffle([q.word, ...q.distractors]);
+      const area = document.getElementById('game-area');
+
+      area.innerHTML = `
+        <div class="flash-instruction">${timedMode ? 'Read the word before it disappears!' : 'Read the word, then find it below!'}</div>
+        <div class="flash-card animate-pop" id="flash-card">
+          <div class="flash-word" id="flash-word">${q.word}</div>
+          ${timedMode ? '<div class="flash-timer-bar" id="flash-timer" style="width:100%"></div>' : ''}
+        </div>
+        <div class="sight-choices" id="choices">
+          ${choices.map(c => `<button class="sight-btn" data-word="${c}">${c}</button>`).join('')}
+        </div>
+        <div class="feedback" id="feedback"></div>
+      `;
+
+      if (timedMode) {
+        const timerBar = document.getElementById('flash-timer');
+        // Animate the timer bar
+        requestAnimationFrame(() => {
+          timerBar.style.width = '0%';
+          timerBar.style.transitionDuration = '3s';
+        });
+        hideTimeout = setTimeout(() => {
+          const wordEl = document.getElementById('flash-word');
+          if (wordEl) wordEl.classList.add('flash-hidden');
+        }, 3000);
+      }
+
+      document.getElementById('choices').addEventListener('click', e => {
+        const btn = e.target.closest('.sight-btn');
+        if (!btn || btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+        handleAnswer(btn.dataset.word, q.word, btn);
+      });
+    }
+
+    function handleAnswer(selected, correctWord, btn) {
+      if (hideTimeout) clearTimeout(hideTimeout);
+      const feedback = document.getElementById('feedback');
+      const allBtns = document.querySelectorAll('.sight-btn');
+      const flashWord = document.getElementById('flash-word');
+
+      // Always reveal the word
+      if (flashWord) flashWord.classList.remove('flash-hidden');
+
+      if (selected === correctWord) {
+        tracker.recordCorrect();
+        btn.classList.add('correct');
+        feedback.className = 'feedback feedback-correct';
+        feedback.textContent = ['Great!', 'Correct!', 'Nice!', 'You got it!', 'Yes!'][randInt(0, 4)];
+        animateEl(btn, 'animate-pop');
+      } else {
+        tracker.recordWrong();
+        btn.classList.add('wrong');
+        animateEl(btn, 'animate-shake');
+        allBtns.forEach(b => { if (b.dataset.word === correctWord) b.classList.add('correct'); });
+        feedback.className = 'feedback feedback-wrong';
+        feedback.textContent = `The word was "${correctWord}"`;
+      }
+
+      updateScoreDisplay(tracker);
+      allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+      setTimeout(() => {
+        questionIndex++;
+        showQuestion();
+      }, 1100);
+    }
+  })();
+  </script>
+</body>
+</html>

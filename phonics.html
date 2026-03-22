@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phonics Game — Match Letters to Sounds | Free for Kids | EduPlay</title>
+  <meta name="description" content="Free phonics game for kids ages 4-8. Match letters to their sounds with fun interactive practice. No accounts, no tracking — 100% private and COPPA-safe.">
+  <meta name="keywords" content="phonics game, letter sounds, alphabet sounds, phonics practice, kids learning, free phonics, letter recognition">
+  <meta property="og:title" content="Phonics Game — Match Letters to Sounds | EduPlay">
+  <meta property="og:description" content="Fun, free phonics game for kids. Match letters to sounds — no accounts needed!">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://dannycranmer.github.io/eduplay/phonics.html">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Phonics Game — Match Letters to Sounds | EduPlay",
+    "description": "Free phonics game for kids. Match letters to their sounds with interactive practice.",
+    "url": "https://dannycranmer.github.io/eduplay/phonics.html",
+    "applicationCategory": "EducationalApplication",
+    "audience": {
+      "@type": "EducationalAudience",
+      "educationalRole": "student",
+      "suggestedMinAge": 4,
+      "suggestedMaxAge": 8
+    },
+    "isAccessibleForFree": true
+  }
+  </script>
+  <style>
+    .letter-display {
+      font-size: 5rem;
+      font-weight: 900;
+      color: var(--purple);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .letter-hint {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+    .word-choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .word-btn {
+      padding: 1rem;
+      border: 3px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .word-btn:hover { border-color: var(--purple); transform: scale(1.03); }
+    .word-btn:active { transform: scale(0.97); }
+    .word-btn.correct { background: #DCFCE7; border-color: var(--green); }
+    .word-btn.wrong { background: #FEE2E2; border-color: var(--red); }
+    .word-btn .word-emoji { font-size: 1.4rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">🎮</span> EduPlay</a>
+      <button class="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="multiplication.html">Multiply</a>
+        <a href="addition.html">Add &amp; Sub</a>
+        <a href="number-bonds.html">Bonds</a>
+        <a href="times-tables.html">Speed</a>
+        <a href="phonics.html" class="active">Phonics</a>
+        <a href="spelling.html">Spelling</a>
+        <a href="sight-words.html">Sight Words</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="game-container">
+    <div class="game-header">
+      <h1>🔤 Phonics — Letter Sounds</h1>
+      <p>Which word starts with this letter sound?</p>
+    </div>
+
+    <div class="difficulty-selector" id="level-selector">
+      <button class="diff-btn" data-level="easy">Easy<br><small>Single Letters</small></button>
+      <button class="diff-btn" data-level="medium">Medium<br><small>Vowel Sounds</small></button>
+      <button class="diff-btn" data-level="hard">Hard<br><small>Blends &amp; Digraphs</small></button>
+    </div>
+
+    <div class="score-bar">
+      <span class="score-correct">✅ <span id="score-correct">0</span></span>
+      <span class="score-wrong">❌ <span id="score-wrong">0</span></span>
+      <span class="score-streak">🔥 <span id="score-streak">0</span></span>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+    <div id="game-area">
+      <div class="start-screen">
+        <h2>Pick a level above to start!</h2>
+        <p>See a letter and find the word that starts with that sound. 10 questions per round.</p>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">Ad space — coming soon</div>
+
+    <div class="parent-info">
+      <h2>For Parents &amp; Teachers</h2>
+      <p>This phonics game helps children learn letter-sound relationships — a critical skill for early reading. Children see a letter or letter combination and choose the word that begins with that sound.</p>
+      <ul>
+        <li><strong>Easy:</strong> Single consonant sounds (B, C, D, etc.) with picture words</li>
+        <li><strong>Medium:</strong> Vowel sounds (short and long A, E, I, O, U)</li>
+        <li><strong>Hard:</strong> Consonant blends (BL, CR, ST) and digraphs (SH, CH, TH)</li>
+        <li>Visual emoji hints help pre-readers connect sounds to words</li>
+        <li>No data is saved or sent anywhere</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="multiplication.html">Multiplication</a>
+      <a href="addition.html">Addition</a>
+      <a href="number-bonds.html">Number Bonds</a>
+      <a href="times-tables.html">Speed Challenge</a>
+      <a href="phonics.html">Phonics</a>
+      <a href="spelling.html">Spelling</a>
+      <a href="sight-words.html">Sight Words</a>
+    </div>
+    <p>&copy; 2026 EduPlay — Free educational games for kids.</p>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script>
+  (function() {
+    const TOTAL_QUESTIONS = 10;
+
+    // Word banks: { letter/combo: [{ word, emoji }] }
+    const EASY_WORDS = {
+      'B': [{w:'Ball',e:'⚽'},{w:'Bear',e:'🐻'},{w:'Boat',e:'🚤'},{w:'Bee',e:'🐝'},{w:'Book',e:'📖'}],
+      'C': [{w:'Cat',e:'🐱'},{w:'Car',e:'🚗'},{w:'Cake',e:'🎂'},{w:'Cow',e:'🐄'},{w:'Cup',e:'☕'}],
+      'D': [{w:'Dog',e:'🐕'},{w:'Duck',e:'🦆'},{w:'Door',e:'🚪'},{w:'Drum',e:'🥁'},{w:'Deer',e:'🦌'}],
+      'F': [{w:'Fish',e:'🐟'},{w:'Fox',e:'🦊'},{w:'Fire',e:'🔥'},{w:'Frog',e:'🐸'},{w:'Fan',e:'🌀'}],
+      'G': [{w:'Goat',e:'🐐'},{w:'Gift',e:'🎁'},{w:'Grape',e:'🍇'},{w:'Guitar',e:'🎸'},{w:'Gem',e:'💎'}],
+      'H': [{w:'Hat',e:'🎩'},{w:'Horse',e:'🐴'},{w:'House',e:'🏠'},{w:'Heart',e:'❤️'},{w:'Hen',e:'🐔'}],
+      'J': [{w:'Jet',e:'✈️'},{w:'Jam',e:'🍯'},{w:'Juice',e:'🧃'},{w:'Jelly',e:'🍮'},{w:'Jewel',e:'💍'}],
+      'K': [{w:'Kite',e:'🪁'},{w:'King',e:'🤴'},{w:'Key',e:'🔑'},{w:'Koala',e:'🐨'},{w:'Kick',e:'🦶'}],
+      'L': [{w:'Lion',e:'🦁'},{w:'Lamp',e:'💡'},{w:'Leaf',e:'🍃'},{w:'Lemon',e:'🍋'},{w:'Lock',e:'🔒'}],
+      'M': [{w:'Moon',e:'🌙'},{w:'Mouse',e:'🐭'},{w:'Mango',e:'🥭'},{w:'Map',e:'🗺️'},{w:'Milk',e:'🥛'}],
+      'N': [{w:'Nest',e:'🪺'},{w:'Nut',e:'🥜'},{w:'Night',e:'🌃'},{w:'Nose',e:'👃'},{w:'Note',e:'🎵'}],
+      'P': [{w:'Pig',e:'🐷'},{w:'Pizza',e:'🍕'},{w:'Pen',e:'🖊️'},{w:'Pear',e:'🍐'},{w:'Park',e:'🏞️'}],
+      'R': [{w:'Rain',e:'🌧️'},{w:'Robot',e:'🤖'},{w:'Ring',e:'💍'},{w:'Rocket',e:'🚀'},{w:'Rose',e:'🌹'}],
+      'S': [{w:'Sun',e:'☀️'},{w:'Star',e:'⭐'},{w:'Snake',e:'🐍'},{w:'Sock',e:'🧦'},{w:'Ship',e:'🚢'}],
+      'T': [{w:'Tree',e:'🌳'},{w:'Tiger',e:'🐯'},{w:'Train',e:'🚂'},{w:'Tent',e:'⛺'},{w:'Tooth',e:'🦷'}],
+      'W': [{w:'Whale',e:'🐋'},{w:'Water',e:'💧'},{w:'Wind',e:'💨'},{w:'Worm',e:'🪱'},{w:'Watch',e:'⌚'}],
+      'Z': [{w:'Zebra',e:'🦓'},{w:'Zoo',e:'🦒'},{w:'Zip',e:'🤐'},{w:'Zero',e:'0️⃣'}],
+    };
+
+    const MEDIUM_WORDS = {
+      'A (short)': [{w:'Apple',e:'🍎'},{w:'Ant',e:'🐜'},{w:'Axe',e:'🪓'},{w:'Alligator',e:'🐊'}],
+      'A (long)': [{w:'Acorn',e:'🌰'},{w:'Ape',e:'🦧'},{w:'Ace',e:'🃏'},{w:'Angel',e:'👼'}],
+      'E (short)': [{w:'Egg',e:'🥚'},{w:'Elf',e:'🧝'},{w:'Elephant',e:'🐘'},{w:'Elbow',e:'💪'}],
+      'E (long)': [{w:'Eagle',e:'🦅'},{w:'Ear',e:'👂'},{w:'Easel',e:'🎨'},{w:'Eel',e:'🐍'}],
+      'I (short)': [{w:'Igloo',e:'🏠'},{w:'Insect',e:'🐛'},{w:'Ink',e:'🖋️'},{w:'Ill',e:'🤒'}],
+      'I (long)': [{w:'Ice',e:'🧊'},{w:'Island',e:'🏝️'},{w:'Iron',e:'🔧'},{w:'Ivy',e:'🌿'}],
+      'O (short)': [{w:'Octopus',e:'🐙'},{w:'Otter',e:'🦦'},{w:'Olive',e:'🫒'},{w:'Ox',e:'🐂'}],
+      'O (long)': [{w:'Ocean',e:'🌊'},{w:'Oval',e:'⭕'},{w:'Oak',e:'🌳'},{w:'Oat',e:'🌾'}],
+      'U (short)': [{w:'Umbrella',e:'☂️'},{w:'Umpire',e:'👨‍⚖️'},{w:'Up',e:'⬆️'},{w:'Undo',e:'↩️'}],
+      'U (long)': [{w:'Unicorn',e:'🦄'},{w:'Uniform',e:'👔'},{w:'Ukulele',e:'🎸'},{w:'Use',e:'✅'}],
+    };
+
+    const HARD_WORDS = {
+      'SH': [{w:'Ship',e:'🚢'},{w:'Shell',e:'🐚'},{w:'Shark',e:'🦈'},{w:'Shoe',e:'👟'},{w:'Sheep',e:'🐑'}],
+      'CH': [{w:'Cheese',e:'🧀'},{w:'Cherry',e:'🍒'},{w:'Chicken',e:'🐔'},{w:'Chair',e:'🪑'},{w:'Church',e:'⛪'}],
+      'TH': [{w:'Thumb',e:'👍'},{w:'Thunder',e:'⚡'},{w:'Three',e:'3️⃣'},{w:'Throne',e:'👑'}],
+      'BL': [{w:'Blue',e:'🔵'},{w:'Blanket',e:'🛏️'},{w:'Block',e:'🧱'},{w:'Bloom',e:'🌸'}],
+      'CR': [{w:'Crab',e:'🦀'},{w:'Crown',e:'👑'},{w:'Crayon',e:'🖍️'},{w:'Cricket',e:'🦗'}],
+      'ST': [{w:'Star',e:'⭐'},{w:'Stone',e:'🪨'},{w:'Storm',e:'⛈️'},{w:'Stamp',e:'📫'}],
+      'TR': [{w:'Train',e:'🚂'},{w:'Tree',e:'🌳'},{w:'Truck',e:'🚛'},{w:'Trumpet',e:'🎺'}],
+      'GR': [{w:'Grape',e:'🍇'},{w:'Grass',e:'🌱'},{w:'Green',e:'💚'},{w:'Grin',e:'😁'}],
+      'FL': [{w:'Flower',e:'🌺'},{w:'Flag',e:'🚩'},{w:'Flame',e:'🔥'},{w:'Fly',e:'🪰'}],
+      'SP': [{w:'Spider',e:'🕷️'},{w:'Spoon',e:'🥄'},{w:'Space',e:'🚀'},{w:'Spark',e:'✨'}],
+      'SN': [{w:'Snake',e:'🐍'},{w:'Snow',e:'❄️'},{w:'Snail',e:'🐌'},{w:'Sneeze',e:'🤧'}],
+      'PL': [{w:'Plane',e:'✈️'},{w:'Plant',e:'🌱'},{w:'Plum',e:'🫐'},{w:'Play',e:'▶️'}],
+    };
+
+    let tracker, questions, questionIndex, currentLevel;
+
+    document.getElementById('level-selector').addEventListener('click', e => {
+      const btn = e.target.closest('.diff-btn');
+      if (!btn) return;
+      document.querySelectorAll('#level-selector .diff-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentLevel = btn.dataset.level;
+      startGame();
+    });
+
+    function getWordBank() {
+      if (currentLevel === 'easy') return EASY_WORDS;
+      if (currentLevel === 'medium') return MEDIUM_WORDS;
+      return HARD_WORDS;
+    }
+
+    function generateQuestions() {
+      const bank = getWordBank();
+      const letters = Object.keys(bank);
+      questions = [];
+      const used = new Set();
+      let attempts = 0;
+      while (questions.length < TOTAL_QUESTIONS && attempts < 200) {
+        const letter = letters[randInt(0, letters.length - 1)];
+        if (used.has(letter) && used.size < letters.length) { attempts++; continue; }
+        used.add(letter);
+        const words = bank[letter];
+        const correctWord = words[randInt(0, words.length - 1)];
+
+        // Get 3 wrong answers from other letters
+        const wrongWords = [];
+        const otherLetters = letters.filter(l => l !== letter);
+        const shuffledOthers = shuffle([...otherLetters]);
+        for (let i = 0; i < Math.min(3, shuffledOthers.length); i++) {
+          const oWords = bank[shuffledOthers[i]];
+          wrongWords.push(oWords[randInt(0, oWords.length - 1)]);
+        }
+
+        questions.push({
+          letter,
+          correct: correctWord,
+          wrongs: wrongWords
+        });
+        attempts++;
+      }
+    }
+
+    function startGame() {
+      tracker = new ScoreTracker();
+      tracker.start();
+      questionIndex = 0;
+      generateQuestions();
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if (questionIndex >= TOTAL_QUESTIONS) {
+        showResults(tracker, 'game-area');
+        return;
+      }
+      const q = questions[questionIndex];
+      const pct = Math.round((questionIndex / TOTAL_QUESTIONS) * 100);
+      document.getElementById('progress').style.width = pct + '%';
+
+      const allChoices = shuffle([q.correct, ...q.wrongs]);
+      const area = document.getElementById('game-area');
+      area.innerHTML = `
+        <div class="question-area animate-pop">
+          <div class="letter-display">${q.letter}</div>
+          <div class="letter-hint">Which word starts with this sound?</div>
+          <div class="word-choices" id="choices">
+            ${allChoices.map(c => `<button class="word-btn" data-word="${c.w}"><span class="word-emoji">${c.e}</span> ${c.w}</button>`).join('')}
+          </div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+      `;
+
+      document.getElementById('choices').addEventListener('click', e => {
+        const btn = e.target.closest('.word-btn');
+        if (!btn || btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+        handleAnswer(btn.dataset.word, q.correct.w, btn);
+      });
+    }
+
+    function handleAnswer(selected, correctWord, btn) {
+      const feedback = document.getElementById('feedback');
+      const allBtns = document.querySelectorAll('.word-btn');
+
+      if (selected === correctWord) {
+        tracker.recordCorrect();
+        btn.classList.add('correct');
+        feedback.className = 'feedback feedback-correct';
+        feedback.textContent = ['Great!', 'Awesome!', 'You got it!', 'Yes!', 'Perfect!'][randInt(0, 4)];
+        animateEl(btn, 'animate-pop');
+      } else {
+        tracker.recordWrong();
+        btn.classList.add('wrong');
+        animateEl(btn, 'animate-shake');
+        allBtns.forEach(b => { if (b.dataset.word === correctWord) b.classList.add('correct'); });
+        feedback.className = 'feedback feedback-wrong';
+        feedback.textContent = `The answer is ${correctWord}!`;
+      }
+
+      updateScoreDisplay(tracker);
+      allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+      setTimeout(() => {
+        questionIndex++;
+        showQuestion();
+      }, 1200);
+    }
+  })();
+  </script>
+</body>
+</html>
