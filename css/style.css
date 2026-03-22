@@ -65,28 +65,132 @@ header {
 
 .logo-icon { font-size: 1.4rem; }
 
-nav a {
-  color: rgba(255,255,255,0.9);
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--radius-sm);
-  transition: background 0.2s, color 0.2s;
+/* Desktop nav links container */
+.nav-links {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
 }
 
-nav a:hover {
+/* Dropdown wrapper */
+.nav-dropdown {
+  position: relative;
+}
+
+/* Dropdown trigger button */
+.nav-dropdown-trigger {
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+.nav-dropdown-trigger:hover,
+.nav-dropdown.open .nav-dropdown-trigger {
   background: rgba(255,255,255,0.2);
   color: #fff;
 }
-
-nav a.active {
-  background: rgba(255,255,255,0.3);
+.nav-dropdown-trigger.has-active {
+  background: rgba(255,255,255,0.25);
   color: #fff;
-  box-shadow: inset 0 -3px 0 #fff;
+}
+.nav-dropdown-trigger .dd-arrow {
+  font-size: 0.55rem;
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+.nav-dropdown.open .dd-arrow {
+  transform: rotate(180deg);
 }
 
-.nav-links { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+/* Dropdown panel */
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s 0.2s;
+  background: #fff;
+  border-radius: 16px;
+  padding: 0.6rem;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08);
+  min-width: 200px;
+  z-index: 500;
+  display: grid;
+  gap: 0.25rem;
+}
+.nav-dropdown.open .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s 0s;
+}
+
+/* Dropdown items */
+.nav-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.82rem;
+  transition: background 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.nav-dropdown-item:hover {
+  background: #F5F3FF;
+  transform: translateX(2px);
+}
+.nav-dropdown-item.active {
+  background: linear-gradient(135deg, #F5F3FF, #FDF2F8);
+  color: var(--purple);
+}
+.nav-dropdown-item-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 1.4rem;
+  text-align: center;
+}
+
+/* "All Games" direct link in nav */
+.nav-home-link {
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.nav-home-link:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+.nav-home-link.active {
+  background: rgba(255,255,255,0.3);
+  color: #fff;
+}
 
 /* ===== HAMBURGER BUTTON ===== */
 .hamburger {
@@ -833,7 +937,7 @@ footer a:hover { text-decoration: underline; }
 @media (max-width: 768px) {
   html { font-size: 16px; }
 
-  .nav-links { display: none; }
+  .nav-links { display: none !important; }
   .hamburger { display: block; }
 
   .hero h1 { font-size: 1.8rem; }

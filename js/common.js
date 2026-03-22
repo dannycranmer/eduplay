@@ -195,5 +195,36 @@ function showResults(tracker, containerId) {
   `;
 }
 
+// Desktop dropdown nav
+function initDropdowns() {
+  document.querySelectorAll('.nav-dropdown').forEach(dd => {
+    const trigger = dd.querySelector('.nav-dropdown-trigger');
+    if (!trigger) return;
+
+    trigger.addEventListener('click', e => {
+      e.stopPropagation();
+      const wasOpen = dd.classList.contains('open');
+      // Close all dropdowns first
+      document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
+      if (!wasOpen) dd.classList.add('open');
+    });
+  });
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
+    }
+  });
+}
+
 // Init on DOM ready
-document.addEventListener('DOMContentLoaded', initNav);
+document.addEventListener('DOMContentLoaded', () => {
+  initNav();
+  initDropdowns();
+});
