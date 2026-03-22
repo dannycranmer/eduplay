@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Division Practice — Free Math Game for Kids | EduPlay</title>
+  <meta name="description" content="Practice division facts with whole-number answers. Three difficulty levels for kids ages 6-12. Free, fun, and private — no accounts needed.">
+  <meta name="keywords" content="division practice, division game, kids math, free math game, division facts, learn division">
+  <meta property="og:title" content="Division Practice — EduPlay">
+  <meta property="og:description" content="Practice division with this fun, free math game for kids. Whole-number answers only!">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://dannycranmer.github.io/eduplay/division.html">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Division Practice — EduPlay",
+    "description": "Practice division facts with whole-number answers. Free math game for kids.",
+    "url": "https://dannycranmer.github.io/eduplay/division.html",
+    "applicationCategory": "EducationalApplication",
+    "isAccessibleForFree": true
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">🎮</span> EduPlay</a>
+      <button class="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="multiplication.html">Multiply</a>
+        <a href="division.html" class="active">Divide</a>
+        <a href="addition.html">Add &amp; Sub</a>
+        <a href="number-bonds.html">Bonds</a>
+        <a href="times-tables.html">Speed</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="game-container">
+    <div class="game-header">
+      <h1>➗ Division Practice</h1>
+      <p>Pick a difficulty level, then choose your divisor!</p>
+    </div>
+
+    <!-- Difficulty level -->
+    <div class="difficulty-selector" id="level-selector">
+      <button class="diff-btn" data-level="easy">Easy<br><small>÷2–÷5</small></button>
+      <button class="diff-btn" data-level="medium">Medium<br><small>÷2–÷9</small></button>
+      <button class="diff-btn" data-level="hard">Hard<br><small>÷2–÷12</small></button>
+    </div>
+
+    <!-- Divisor selector (shown after difficulty is picked) -->
+    <div class="difficulty-selector" id="divisor-selector" style="display:none"></div>
+
+    <div class="score-bar" style="display:none" id="score-bar">
+      <span class="score-correct">✅ <span id="score-correct">0</span></span>
+      <span class="score-wrong">❌ <span id="score-wrong">0</span></span>
+      <span class="score-streak">🔥 <span id="score-streak">0</span></span>
+    </div>
+
+    <div class="progress-bar" style="display:none" id="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+    <div id="game-area">
+      <div class="start-screen">
+        <h2>Choose a difficulty level to start!</h2>
+        <p>Practice 10 division questions. Only whole-number answers — no remainders!</p>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">Ad space — coming soon</div>
+
+    <div class="parent-info">
+      <h2>For Parents &amp; Teachers</h2>
+      <p>This game helps children build division fluency through practice with whole-number quotients. All problems produce clean answers with no remainders, building confidence before tackling long division.</p>
+      <ul>
+        <li><strong>Easy:</strong> Divisors 2–5, dividends up to 50 — great for beginners</li>
+        <li><strong>Medium:</strong> Divisors 2–9, dividends up to 100 — solid practice</li>
+        <li><strong>Hard:</strong> Divisors 2–12, dividends up to 144 — full mastery</li>
+        <li>Multiple-choice format reduces frustration</li>
+        <li>No data is saved or sent anywhere</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="multiplication.html">Multiplication</a>
+      <a href="division.html">Division</a>
+      <a href="addition.html">Addition</a>
+      <a href="number-bonds.html">Number Bonds</a>
+      <a href="times-tables.html">Speed Challenge</a>
+    </div>
+    <p>&copy; 2026 EduPlay — Free educational games for kids.</p>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script>
+  (function() {
+    const TOTAL_QUESTIONS = 10;
+    let tracker, currentLevel, currentDivisor, questions, questionIndex;
+
+    const LEVELS = {
+      easy:   { minDiv: 2, maxDiv: 5,  maxDividend: 50 },
+      medium: { minDiv: 2, maxDiv: 9,  maxDividend: 100 },
+      hard:   { minDiv: 2, maxDiv: 12, maxDividend: 144 }
+    };
+
+    // Level selector
+    document.getElementById('level-selector').addEventListener('click', e => {
+      const btn = e.target.closest('.diff-btn');
+      if (!btn) return;
+      document.querySelectorAll('#level-selector .diff-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentLevel = btn.dataset.level;
+      showDivisorSelector();
+    });
+
+    function showDivisorSelector() {
+      const level = LEVELS[currentLevel];
+      const container = document.getElementById('divisor-selector');
+      container.style.display = 'flex';
+      let html = '';
+      for (let d = level.minDiv; d <= level.maxDiv; d++) {
+        html += `<button class="diff-btn" data-divisor="${d}">÷${d}</button>`;
+      }
+      html += `<button class="diff-btn" data-divisor="mix">Mix!</button>`;
+      container.innerHTML = html;
+
+      container.addEventListener('click', e => {
+        const btn = e.target.closest('.diff-btn');
+        if (!btn) return;
+        container.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentDivisor = btn.dataset.divisor;
+        startGame();
+      });
+    }
+
+    function generateDivisionPair(divisor, maxDividend) {
+      // Generate a÷b=c where a=dividend, b=divisor, c=quotient (whole number)
+      const maxQuotient = Math.floor(maxDividend / divisor);
+      const quotient = randInt(1, maxQuotient);
+      const dividend = divisor * quotient;
+      return { dividend, divisor, answer: quotient };
+    }
+
+    function generateQuestions() {
+      questions = [];
+      const level = LEVELS[currentLevel];
+      const seen = new Set();
+
+      if (currentDivisor === 'mix') {
+        let attempts = 0;
+        while (questions.length < TOTAL_QUESTIONS && attempts < 300) {
+          const div = randInt(level.minDiv, level.maxDiv);
+          const pair = generateDivisionPair(div, level.maxDividend);
+          const key = pair.dividend + '÷' + pair.divisor;
+          if (!seen.has(key)) {
+            seen.add(key);
+            questions.push(pair);
+          }
+          attempts++;
+        }
+      } else {
+        // Specific divisor: generate all possible quotients and shuffle
+        const divisor = parseInt(currentDivisor);
+        const maxQuotient = Math.floor(level.maxDividend / divisor);
+        const allQuotients = [];
+        for (let q = 1; q <= maxQuotient; q++) {
+          allQuotients.push(q);
+        }
+        shuffle(allQuotients);
+        const count = Math.min(TOTAL_QUESTIONS, allQuotients.length);
+        for (let i = 0; i < count; i++) {
+          const quotient = allQuotients[i];
+          questions.push({ dividend: divisor * quotient, divisor, answer: quotient });
+        }
+      }
+    }
+
+    function startGame() {
+      tracker = new ScoreTracker();
+      tracker.start();
+      questionIndex = 0;
+      generateQuestions();
+      document.getElementById('score-bar').style.display = 'flex';
+      document.getElementById('progress-bar').style.display = 'block';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if (questionIndex >= TOTAL_QUESTIONS) {
+        showResults(tracker, 'game-area');
+        return;
+      }
+      const q = questions[questionIndex];
+      const pct = Math.round((questionIndex / TOTAL_QUESTIONS) * 100);
+      document.getElementById('progress').style.width = pct + '%';
+
+      const choices = generateChoices(q.answer, 4, Math.max(3, Math.floor(q.answer * 0.4)));
+      const area = document.getElementById('game-area');
+      area.innerHTML = `
+        <div class="question-area animate-pop">
+          <div class="question-text">${q.dividend} ÷ ${q.divisor} = ?</div>
+          <div class="answer-choices" id="choices">
+            ${choices.map(c => `<button class="choice-btn" data-val="${c}">${c}</button>`).join('')}
+          </div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+      `;
+
+      document.getElementById('choices').addEventListener('click', e => {
+        const btn = e.target.closest('.choice-btn');
+        if (!btn || btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+        handleAnswer(parseInt(btn.dataset.val), q.answer, btn);
+      });
+    }
+
+    function handleAnswer(selected, correct, btn) {
+      const feedback = document.getElementById('feedback');
+      const allBtns = document.querySelectorAll('.choice-btn');
+
+      if (selected === correct) {
+        tracker.recordCorrect();
+        btn.classList.add('correct');
+        feedback.className = 'feedback feedback-correct';
+        feedback.textContent = ['Great!', 'Awesome!', 'Correct!', 'Yes!', 'Perfect!'][randInt(0, 4)];
+        animateEl(btn, 'animate-pop');
+      } else {
+        tracker.recordWrong();
+        btn.classList.add('wrong');
+        animateEl(btn, 'animate-shake');
+        allBtns.forEach(b => { if (parseInt(b.dataset.val) === correct) b.classList.add('correct'); });
+        feedback.className = 'feedback feedback-wrong';
+        feedback.textContent = `It's ${correct}. Keep going!`;
+      }
+
+      updateScoreDisplay(tracker);
+      allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+      setTimeout(() => {
+        questionIndex++;
+        showQuestion();
+      }, 900);
+    }
+  })();
+  </script>
+</body>
+</html>
