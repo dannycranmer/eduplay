@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fractions Game — Learn Fractions Visually | EduPlay</title>
+  <meta name="description" content="Learn fractions with colorful visual bar models! Name fractions, compare them, and find equivalents. Free game for kids ages 7-12.">
+  <meta name="keywords" content="fractions game, learn fractions, visual fractions, fraction bars, equivalent fractions, compare fractions, free math game, kids fractions">
+  <meta property="og:title" content="Fractions Game — Learn Fractions Visually | EduPlay">
+  <meta property="og:description" content="Learn fractions with colorful visual bar models! Three modes: name, compare, and find equivalents.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://dannycranmer.github.io/eduplay/fractions.html">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Fractions Game — EduPlay",
+    "description": "Learn fractions with visual bar models. Name fractions, compare them, find equivalents. Free math game for kids ages 7-12.",
+    "url": "https://dannycranmer.github.io/eduplay/fractions.html",
+    "applicationCategory": "EducationalApplication",
+    "isAccessibleForFree": true
+  }
+  </script>
+  <style>
+    /* Fraction bar styles */
+    .fraction-bar {
+      display: flex;
+      width: 100%;
+      max-width: 360px;
+      height: 56px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 3px solid #CBD5E1;
+      margin: 0 auto;
+      background: #F1F5F9;
+    }
+
+    .fraction-bar.bar-small {
+      max-width: 260px;
+      height: 48px;
+    }
+
+    .fraction-segment {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.9);
+      border-right: 2px solid rgba(255,255,255,0.5);
+      transition: background 0.3s;
+    }
+
+    .fraction-segment:last-child {
+      border-right: none;
+    }
+
+    .fraction-segment.shaded {
+      background: var(--purple);
+    }
+
+    .fraction-segment.shaded-blue {
+      background: var(--blue);
+    }
+
+    .fraction-segment.shaded-pink {
+      background: var(--pink);
+    }
+
+    .fraction-segment.shaded-green {
+      background: var(--green);
+    }
+
+    .fraction-segment.shaded-orange {
+      background: var(--orange);
+    }
+
+    .fraction-segment.unshaded {
+      background: #E2E8F0;
+    }
+
+    /* Fraction text display */
+    .fraction-display {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      font-weight: 900;
+      line-height: 1;
+      margin: 0 0.3rem;
+    }
+
+    .fraction-display .frac-num,
+    .fraction-display .frac-den {
+      font-size: 1.8rem;
+    }
+
+    .fraction-display .frac-line {
+      width: 100%;
+      height: 3px;
+      background: var(--text);
+      margin: 4px 0;
+      border-radius: 2px;
+      min-width: 30px;
+    }
+
+    /* Compare mode layout */
+    .compare-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+
+    .compare-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      border: 3px solid #E2E8F0;
+      background: #fff;
+      transition: all 0.2s;
+      min-width: 160px;
+    }
+
+    .compare-side:hover {
+      border-color: var(--purple);
+      transform: scale(1.03);
+    }
+
+    .compare-side:active {
+      transform: scale(0.97);
+    }
+
+    .compare-side.correct {
+      background: #DCFCE7;
+      border-color: var(--green);
+    }
+
+    .compare-side.wrong {
+      background: #FEE2E2;
+      border-color: var(--red);
+    }
+
+    .compare-side.highlight {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.3);
+    }
+
+    .compare-vs {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--text-light);
+    }
+
+    /* Fraction label under bar */
+    .fraction-label {
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin-top: 0.4rem;
+      color: var(--text);
+    }
+
+    /* Equivalent mode instruction */
+    .equiv-prompt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .equiv-prompt .prompt-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    /* Choice buttons for fractions */
+    .fraction-choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .fraction-choice-btn {
+      padding: 1rem;
+      border: 3px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-family: inherit;
+      font-size: 1.5rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.15s;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fraction-choice-btn:hover {
+      border-color: var(--purple);
+      transform: scale(1.03);
+    }
+
+    .fraction-choice-btn:active {
+      transform: scale(0.97);
+    }
+
+    .fraction-choice-btn.correct {
+      background: #DCFCE7;
+      border-color: var(--green);
+    }
+
+    .fraction-choice-btn.wrong {
+      background: #FEE2E2;
+      border-color: var(--red);
+    }
+
+    @media (max-width: 480px) {
+      .fraction-bar { height: 44px; }
+      .fraction-bar.bar-small { height: 38px; max-width: 200px; }
+      .compare-side { min-width: 130px; padding: 0.7rem; }
+      .compare-container { gap: 0.8rem; }
+      .fraction-display .frac-num, .fraction-display .frac-den { font-size: 1.4rem; }
+      .fraction-label { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">🎮</span> EduPlay</a>
+      <button class="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="multiplication.html">Multiply</a>
+        <a href="division.html">Divide</a>
+        <a href="addition.html">Add &amp; Sub</a>
+        <a href="number-bonds.html">Bonds</a>
+        <a href="times-tables.html">Speed</a>
+        <a href="fractions.html" class="active">Fractions</a>
+        <a href="phonics.html">Phonics</a>
+        <a href="spelling.html">Spelling</a>
+        <a href="sight-words.html">Sight Words</a>
+      <a href="word-problems.html">Word Problems</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="game-container">
+    <div class="game-header">
+      <h1>🍕 Fractions</h1>
+      <p>Learn fractions with colorful bars! See it, understand it, master it.</p>
+    </div>
+
+    <div class="difficulty-selector" id="mode-selector">
+      <button class="diff-btn" data-mode="name">🟣 Name It<br><small>Easy</small></button>
+      <button class="diff-btn" data-mode="compare">🔵 Compare<br><small>Medium</small></button>
+      <button class="diff-btn" data-mode="equivalent">🟢 Equivalents<br><small>Hard</small></button>
+    </div>
+
+    <div class="score-bar">
+      <span class="score-correct">✅ <span id="score-correct">0</span></span>
+      <span class="score-wrong">❌ <span id="score-wrong">0</span></span>
+      <span class="score-streak">🔥 <span id="score-streak">0</span></span>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+    <div id="game-area">
+      <div class="start-screen">
+        <h2>Choose a mode above to start!</h2>
+        <p><strong>Name It</strong> — look at the shaded bar and pick the right fraction.<br>
+        <strong>Compare</strong> — which fraction is bigger?<br>
+        <strong>Equivalents</strong> — find the fraction that equals the one shown.</p>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">Ad space — coming soon</div>
+
+    <div class="parent-info">
+      <h2>For Parents &amp; Teachers</h2>
+      <p>This game introduces fractions through visual bar models — one of the most effective ways for children to build fraction sense. Three progressive modes:</p>
+      <ul>
+        <li><strong>Name the Fraction (Easy)</strong> — identify fractions from visual models using halves, thirds, quarters, and fifths</li>
+        <li><strong>Compare Fractions (Medium)</strong> — determine which fraction is larger using side-by-side bar models</li>
+        <li><strong>Equivalent Fractions (Hard)</strong> — find fractions that represent the same amount (e.g., 1/2 = 2/4 = 3/6)</li>
+      </ul>
+      <p>Covers Common Core standards 3.NF.A.1, 3.NF.A.3, 4.NF.A.1, 4.NF.A.2. No data is saved or sent anywhere.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="multiplication.html">Multiplication</a>
+      <a href="division.html">Division</a>
+      <a href="addition.html">Addition</a>
+      <a href="number-bonds.html">Number Bonds</a>
+      <a href="times-tables.html">Speed Challenge</a>
+      <a href="fractions.html">Fractions</a>
+      <a href="phonics.html">Phonics</a>
+      <a href="spelling.html">Spelling</a>
+      <a href="sight-words.html">Sight Words</a>
+      <a href="word-problems.html">Word Problems</a>
+    </div>
+    <p>&copy; 2026 EduPlay — Free educational games for kids.</p>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script>
+  (function() {
+    const TOTAL_QUESTIONS = 10;
+    const BAR_COLORS = ['shaded', 'shaded-blue', 'shaded-pink', 'shaded-green', 'shaded-orange'];
+    let tracker, currentMode, questionIndex;
+
+    // Mode selector
+    document.getElementById('mode-selector').addEventListener('click', e => {
+      const btn = e.target.closest('.diff-btn');
+      if (!btn) return;
+      document.querySelectorAll('#mode-selector .diff-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentMode = btn.dataset.mode;
+      startGame();
+    });
+
+    function startGame() {
+      tracker = new ScoreTracker();
+      tracker.start();
+      questionIndex = 0;
+      showQuestion();
+    }
+
+    // Build a fraction bar HTML
+    function buildBar(numerator, denominator, colorClass) {
+      colorClass = colorClass || BAR_COLORS[randInt(0, BAR_COLORS.length - 1)];
+      let html = '<div class="fraction-bar">';
+      for (let i = 0; i < denominator; i++) {
+        html += '<div class="fraction-segment ' + (i < numerator ? colorClass : 'unshaded') + '"></div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    function buildBarSmall(numerator, denominator, colorClass) {
+      colorClass = colorClass || BAR_COLORS[randInt(0, BAR_COLORS.length - 1)];
+      let html = '<div class="fraction-bar bar-small">';
+      for (let i = 0; i < denominator; i++) {
+        html += '<div class="fraction-segment ' + (i < numerator ? colorClass : 'unshaded') + '"></div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    // Format fraction as text
+    function fracText(num, den) {
+      return num + '/' + den;
+    }
+
+    // GCD for simplifying
+    function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+
+    // ====== NAME THE FRACTION (Easy) ======
+    function generateNameQuestion() {
+      const denominators = [2, 3, 4, 5];
+      const den = denominators[randInt(0, denominators.length - 1)];
+      const num = randInt(1, den - 1);
+      const colorClass = BAR_COLORS[randInt(0, BAR_COLORS.length - 1)];
+
+      // Generate 3 wrong answers
+      const correct = fracText(num, den);
+      const choices = new Set([correct]);
+      let attempts = 0;
+      while (choices.size < 4 && attempts < 50) {
+        const wDen = denominators[randInt(0, denominators.length - 1)];
+        const wNum = randInt(1, wDen - 1);
+        const wrong = fracText(wNum, wDen);
+        if (wrong !== correct) choices.add(wrong);
+        attempts++;
+      }
+
+      return { num, den, correct, choices: shuffle([...choices]), colorClass };
+    }
+
+    function showNameQuestion() {
+      const q = generateNameQuestion();
+      const area = document.getElementById('game-area');
+      updateProgress();
+
+      area.innerHTML = `
+        <div class="question-area animate-pop">
+          <div style="font-size:1.1rem;font-weight:700;color:var(--text-light);margin-bottom:0.8rem;">What fraction is shaded?</div>
+          ${buildBar(q.num, q.den, q.colorClass)}
+          <div style="margin-top:1.2rem;">
+            <div class="fraction-choices" id="choices">
+              ${q.choices.map(c => `<button class="fraction-choice-btn" data-val="${c}">${c}</button>`).join('')}
+            </div>
+          </div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+      `;
+
+      document.getElementById('choices').addEventListener('click', e => {
+        const btn = e.target.closest('.fraction-choice-btn');
+        if (!btn || btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+        handleNameAnswer(btn.dataset.val, q.correct, btn);
+      });
+    }
+
+    function handleNameAnswer(selected, correct, btn) {
+      const feedback = document.getElementById('feedback');
+      const allBtns = document.querySelectorAll('.fraction-choice-btn');
+
+      if (selected === correct) {
+        tracker.recordCorrect();
+        btn.classList.add('correct');
+        feedback.className = 'feedback feedback-correct';
+        feedback.textContent = ['Great!', 'Awesome!', 'Correct!', 'Yes!', 'Perfect!'][randInt(0, 4)];
+        animateEl(btn, 'animate-pop');
+      } else {
+        tracker.recordWrong();
+        btn.classList.add('wrong');
+        animateEl(btn, 'animate-shake');
+        allBtns.forEach(b => { if (b.dataset.val === correct) b.classList.add('correct'); });
+        feedback.className = 'feedback feedback-wrong';
+        feedback.textContent = 'It\'s ' + correct + '. Keep going!';
+      }
+
+      updateScoreDisplay(tracker);
+      allBtns.forEach(b => b.style.pointerEvents = 'none');
+      setTimeout(() => { questionIndex++; showQuestion(); }, 1000);
+    }
+
+    // ====== COMPARE FRACTIONS (Medium) ======
+    function generateCompareQuestion() {
+      const denominators = [2, 3, 4, 5, 6, 8];
+      // Pick two different fractions
+      let n1, d1, n2, d2;
+      let attempts = 0;
+      do {
+        d1 = denominators[randInt(0, denominators.length - 1)];
+        n1 = randInt(1, d1 - 1);
+        d2 = denominators[randInt(0, denominators.length - 1)];
+        n2 = randInt(1, d2 - 1);
+        attempts++;
+      } while ((n1/d1 === n2/d2) && attempts < 50);
+
+      const val1 = n1 / d1;
+      const val2 = n2 / d2;
+      // Correct answer: 'left' or 'right'
+      const correct = val1 > val2 ? 'left' : (val2 > val1 ? 'right' : 'equal');
+
+      return { n1, d1, n2, d2, correct };
+    }
+
+    function showCompareQuestion() {
+      const q = generateCompareQuestion();
+      const area = document.getElementById('game-area');
+      updateProgress();
+
+      const color1 = BAR_COLORS[randInt(0, BAR_COLORS.length - 1)];
+      let color2 = BAR_COLORS[randInt(0, BAR_COLORS.length - 1)];
+      while (color2 === color1) color2 = BAR_COLORS[randInt(0, BAR_COLORS.length - 1)];
+
+      area.innerHTML = `
+        <div class="question-area animate-pop">
+          <div style="font-size:1.1rem;font-weight:700;color:var(--text-light);margin-bottom:0.8rem;">Which fraction is bigger? Tap it!</div>
+          <div class="compare-container">
+            <div class="compare-side" data-side="left" id="side-left">
+              ${buildBarSmall(q.n1, q.d1, color1)}
+              <div class="fraction-label">${fracText(q.n1, q.d1)}</div>
+            </div>
+            <div class="compare-vs">VS</div>
+            <div class="compare-side" data-side="right" id="side-right">
+              ${buildBarSmall(q.n2, q.d2, color2)}
+              <div class="fraction-label">${fracText(q.n2, q.d2)}</div>
+            </div>
+          </div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+      `;
+
+      const leftSide = document.getElementById('side-left');
+      const rightSide = document.getElementById('side-right');
+
+      function handleCompareClick(side) {
+        if (leftSide.classList.contains('correct') || leftSide.classList.contains('wrong')) return;
+
+        const feedback = document.getElementById('feedback');
+        if (side === q.correct) {
+          tracker.recordCorrect();
+          document.getElementById('side-' + side).classList.add('correct');
+          feedback.className = 'feedback feedback-correct';
+          feedback.textContent = ['Right!', 'You got it!', 'Correct!', 'Nice!', 'Exactly!'][randInt(0, 4)];
+          animateEl(document.getElementById('side-' + side), 'animate-pop');
+        } else {
+          tracker.recordWrong();
+          document.getElementById('side-' + side).classList.add('wrong');
+          document.getElementById('side-' + q.correct).classList.add('highlight');
+          animateEl(document.getElementById('side-' + side), 'animate-shake');
+          feedback.className = 'feedback feedback-wrong';
+          const correctFrac = q.correct === 'left' ? fracText(q.n1, q.d1) : fracText(q.n2, q.d2);
+          feedback.textContent = correctFrac + ' is bigger!';
+        }
+
+        updateScoreDisplay(tracker);
+        leftSide.style.pointerEvents = 'none';
+        rightSide.style.pointerEvents = 'none';
+        setTimeout(() => { questionIndex++; showQuestion(); }, 1000);
+      }
+
+      leftSide.addEventListener('click', () => handleCompareClick('left'));
+      rightSide.addEventListener('click', () => handleCompareClick('right'));
+    }
+
+    // ====== EQUIVALENT FRACTIONS (Hard) ======
+    function generateEquivalentQuestion() {
+      // Base fractions to use
+      const bases = [
+        {n: 1, d: 2}, {n: 1, d: 3}, {n: 2, d: 3},
+        {n: 1, d: 4}, {n: 3, d: 4}, {n: 1, d: 5},
+        {n: 2, d: 5}, {n: 3, d: 5}, {n: 4, d: 5},
+        {n: 2, d: 4}, {n: 1, d: 6}, {n: 5, d: 6}
+      ];
+
+      const base = bases[randInt(0, bases.length - 1)];
+      // Simplify the base
+      const g = gcd(base.n, base.d);
+      const sn = base.n / g;
+      const sd = base.d / g;
+
+      // Show the fraction multiplied by a factor
+      const showFactor = randInt(1, 3);
+      const showN = sn * showFactor;
+      const showD = sd * showFactor;
+
+      // Correct answer: different factor
+      let correctFactor = randInt(1, 4);
+      while (correctFactor === showFactor) correctFactor = randInt(1, 4);
+      const correctN = sn * correctFactor;
+      const correctD = sd * correctFactor;
+      const correct = fracText(correctN, correctD);
+
+      // Generate 3 wrong choices
+      const choices = new Set([correct]);
+      let attempts = 0;
+      while (choices.size < 4 && attempts < 80) {
+        // Generate non-equivalent fractions
+        const wDen = [2, 3, 4, 5, 6, 8, 10, 12][randInt(0, 7)];
+        const wNum = randInt(1, wDen - 1);
+        const wVal = wNum / wDen;
+        const origVal = sn / sd;
+        // Make sure it's NOT equivalent
+        if (Math.abs(wVal - origVal) > 0.01) {
+          choices.add(fracText(wNum, wDen));
+        }
+        attempts++;
+      }
+
+      const colorClass = BAR_COLORS[randInt(0, BAR_COLORS.length - 1)];
+
+      return { showN, showD, correctN, correctD, correct, sn, sd, choices: shuffle([...choices]), colorClass };
+    }
+
+    function showEquivalentQuestion() {
+      const q = generateEquivalentQuestion();
+      const area = document.getElementById('game-area');
+      updateProgress();
+
+      area.innerHTML = `
+        <div class="question-area animate-pop">
+          <div class="equiv-prompt">
+            <div class="prompt-text">Which fraction equals ${fracText(q.showN, q.showD)}?</div>
+            ${buildBar(q.showN, q.showD, q.colorClass)}
+          </div>
+          <div class="fraction-choices" id="choices">
+            ${q.choices.map(c => `<button class="fraction-choice-btn" data-val="${c}">${c}</button>`).join('')}
+          </div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+      `;
+
+      document.getElementById('choices').addEventListener('click', e => {
+        const btn = e.target.closest('.fraction-choice-btn');
+        if (!btn || btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+        handleEquivalentAnswer(btn.dataset.val, q.correct, btn);
+      });
+    }
+
+    function handleEquivalentAnswer(selected, correct, btn) {
+      const feedback = document.getElementById('feedback');
+      const allBtns = document.querySelectorAll('.fraction-choice-btn');
+
+      if (selected === correct) {
+        tracker.recordCorrect();
+        btn.classList.add('correct');
+        feedback.className = 'feedback feedback-correct';
+        feedback.textContent = ['Yes!', 'Equivalent!', 'Correct!', 'Nailed it!', 'Spot on!'][randInt(0, 4)];
+        animateEl(btn, 'animate-pop');
+      } else {
+        tracker.recordWrong();
+        btn.classList.add('wrong');
+        animateEl(btn, 'animate-shake');
+        allBtns.forEach(b => { if (b.dataset.val === correct) b.classList.add('correct'); });
+        feedback.className = 'feedback feedback-wrong';
+        feedback.textContent = 'It\'s ' + correct + '!';
+      }
+
+      updateScoreDisplay(tracker);
+      allBtns.forEach(b => b.style.pointerEvents = 'none');
+      setTimeout(() => { questionIndex++; showQuestion(); }, 1000);
+    }
+
+    // ====== COMMON ======
+    function updateProgress() {
+      const pct = Math.round((questionIndex / TOTAL_QUESTIONS) * 100);
+      document.getElementById('progress').style.width = pct + '%';
+    }
+
+    function showQuestion() {
+      if (questionIndex >= TOTAL_QUESTIONS) {
+        showResults(tracker, 'game-area');
+        return;
+      }
+      if (currentMode === 'name') showNameQuestion();
+      else if (currentMode === 'compare') showCompareQuestion();
+      else if (currentMode === 'equivalent') showEquivalentQuestion();
+    }
+  })();
+  </script>
+</body>
+</html>
