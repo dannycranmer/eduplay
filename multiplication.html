@@ -119,16 +119,28 @@
 
     function generateQuestions() {
       questions = [];
-      for (let i = 0; i < TOTAL_QUESTIONS; i++) {
-        let a, b;
-        if (currentTable === 'mix') {
-          a = randInt(2, 12);
-          b = randInt(1, 12);
-        } else {
-          a = parseInt(currentTable);
-          b = randInt(1, 12);
+      if (currentTable === 'mix') {
+        // Generate unique (a, b) pairs for mix mode
+        const seen = new Set();
+        let attempts = 0;
+        while (questions.length < TOTAL_QUESTIONS && attempts < 200) {
+          const a = randInt(2, 12);
+          const b = randInt(1, 12);
+          const key = a + '×' + b;
+          if (!seen.has(key)) {
+            seen.add(key);
+            questions.push({ a, b, answer: a * b });
+          }
+          attempts++;
         }
-        questions.push({ a, b, answer: a * b });
+      } else {
+        // Specific table: shuffle 1-12 and pick first 10 — no repeats possible
+        const nums = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+        const a = parseInt(currentTable);
+        for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+          const b = nums[i];
+          questions.push({ a, b, answer: a * b });
+        }
       }
     }
 
