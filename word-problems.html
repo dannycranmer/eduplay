@@ -398,6 +398,8 @@
       hard: generateHard
     };
 
+    showProgressStars('word-problems');
+
     document.getElementById('diff-selector').addEventListener('click', e => {
       const btn = e.target.closest('.diff-btn');
       if (!btn) return;
@@ -419,7 +421,7 @@
     }
 
     function showQ() {
-      if (qi >= TOTAL) { showResults(tracker, 'game-area'); return; }
+      if (qi >= TOTAL) { showResults(tracker, 'game-area', 'word-problems', difficulty); return; }
       const q = questions[qi];
       document.getElementById('progress').style.width = Math.round((qi / TOTAL) * 100) + '%';
 

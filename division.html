@@ -161,6 +161,8 @@
       hard:   { minDiv: 2, maxDiv: 12, maxDividend: 144 }
     };
 
+    showProgressStars('division');
+
     // Level selector
     document.getElementById('level-selector').addEventListener('click', e => {
       const btn = e.target.closest('.diff-btn');
@@ -246,7 +248,7 @@
 
     function showQuestion() {
       if (questionIndex >= TOTAL_QUESTIONS) {
-        showResults(tracker, 'game-area');
+        showResults(tracker, 'game-area', 'division', currentLevel);
         return;
       }
       const q = questions[questionIndex];

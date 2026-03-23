@@ -365,6 +365,8 @@
     const BAR_COLORS = ['shaded', 'shaded-blue', 'shaded-pink', 'shaded-green', 'shaded-orange'];
     let tracker, currentMode, questionIndex;
 
+    showProgressStars('fractions');
+
     // Mode selector
     document.getElementById('mode-selector').addEventListener('click', e => {
       const btn = e.target.closest('.diff-btn');
@@ -670,7 +672,7 @@
 
     function showQuestion() {
       if (questionIndex >= TOTAL_QUESTIONS) {
-        showResults(tracker, 'game-area');
+        showResults(tracker, 'game-area', 'fractions', currentMode);
         return;
       }
       if (currentMode === 'name') showNameQuestion();

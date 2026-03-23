@@ -69,6 +69,15 @@
     .word-btn.correct { background: #DCFCE7; border-color: var(--green); }
     .word-btn.wrong { background: #FEE2E2; border-color: var(--red); }
     .word-btn .word-emoji { font-size: 1.4rem; }
+    .letter-row { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .listen-btn {
+      background: none; border: 2px solid var(--purple); border-radius: 50%;
+      width: 48px; height: 48px; font-size: 1.5rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .listen-btn:hover { background: var(--purple); transform: scale(1.1); }
+    .listen-btn:active { transform: scale(0.95); }
   </style>
 </head>
 <body>
@@ -198,6 +207,37 @@
   (function() {
     const TOTAL_QUESTIONS = 10;
 
+    // --- Phonics Audio (Web SpeechSynthesis API) ---
+    function speakText(text, rate, pitch) {
+      try {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        var utter = new SpeechSynthesisUtterance(text);
+        utter.rate = rate || 0.8;
+        utter.pitch = pitch || 1.1;
+        utter.volume = 1;
+        // Try to pick a child-friendly English voice
+        var voices = window.speechSynthesis.getVoices();
+        var enVoice = voices.find(function(v) { return v.lang.startsWith('en') && v.name.toLowerCase().indexOf('female') !== -1; })
+                   || voices.find(function(v) { return v.lang.startsWith('en'); });
+        if (enVoice) utter.voice = enVoice;
+        window.speechSynthesis.speak(utter);
+      } catch (e) { /* speech not available */ }
+    }
+
+    // Get the phonetic text to speak for a letter/combo
+    function getLetterSound(letter) {
+      // For digraphs/blends, just speak them as-is
+      if (letter.length >= 2 && !letter.includes('(')) return letter.toLowerCase();
+      // For vowel labels like "A (short)", extract the letter
+      var match = letter.match(/^([A-Z])\s*\(/);
+      if (match) return match[1].toLowerCase();
+      // Single letter — speak the letter itself
+      return letter.toLowerCase();
+    }
+
+    var currentLetterSound = '';
+
     // Word banks: { letter/combo: [{ word, emoji }] }
     const EASY_WORDS = {
       'B': [{w:'Ball',e:'⚽'},{w:'Bear',e:'🐻'},{w:'Boat',e:'🚤'},{w:'Bee',e:'🐝'},{w:'Book',e:'📖'}],
@@ -249,6 +289,11 @@
 
     let tracker, questions, questionIndex, currentLevel;
 
+    // Show progress stars on level buttons once voices are loaded
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = function() {};
+    }
+
     document.getElementById('level-selector').addEventListener('click', e => {
       const btn = e.target.closest('.diff-btn');
       if (!btn) return;
@@ -257,6 +302,9 @@
       currentLevel = btn.dataset.level;
       startGame();
     });
+
+    // Show progress stars on page load
+    showProgressStars('phonics');
 
     function getWordBank() {
       if (currentLevel === 'easy') return EASY_WORDS;
@@ -305,18 +353,23 @@
 
     function showQuestion() {
       if (questionIndex >= TOTAL_QUESTIONS) {
-        showResults(tracker, 'game-area');
+        showResults(tracker, 'game-area', 'phonics', currentLevel);
         return;
       }
       const q = questions[questionIndex];
       const pct = Math.round((questionIndex / TOTAL_QUESTIONS) * 100);
       document.getElementById('progress').style.width = pct + '%';
 
+      currentLetterSound = getLetterSound(q.letter);
+
       const allChoices = shuffle([q.correct, ...q.wrongs]);
       const area = document.getElementById('game-area');
       area.innerHTML = `
         <div class="question-area animate-pop">
-          <div class="letter-display">${q.letter}</div>
+          <div class="letter-row">
+            <div class="letter-display">${q.letter}</div>
+            <button class="listen-btn" id="listen-again" title="Listen again" aria-label="Listen again">🔊</button>
+          </div>
           <div class="letter-hint">Which word starts with this sound?</div>
           <div class="word-choices" id="choices">
             ${allChoices.map(c => `<button class="word-btn" data-word="${c.w}"><span class="word-emoji">${c.e}</span> ${c.w}</button>`).join('')}
@@ -324,6 +377,14 @@
           <div class="feedback" id="feedback"></div>
         </div>
       `;
+
+      // Speak the letter sound automatically
+      speakText(currentLetterSound, 0.8, 1.1);
+
+      // Listen Again button
+      document.getElementById('listen-again').addEventListener('click', function() {
+        speakText(currentLetterSound, 0.8, 1.1);
+      });
 
       document.getElementById('choices').addEventListener('click', e => {
         const btn = e.target.closest('.word-btn');
@@ -342,6 +403,8 @@
         feedback.className = 'feedback feedback-correct';
         feedback.textContent = ['Great!', 'Awesome!', 'You got it!', 'Yes!', 'Perfect!'][randInt(0, 4)];
         animateEl(btn, 'animate-pop');
+        // Speak the correct word after a short delay
+        setTimeout(function() { speakText(correctWord, 0.8, 1.1); }, 400);
       } else {
         tracker.recordWrong();
         btn.classList.add('wrong');
@@ -349,6 +412,8 @@
         allBtns.forEach(b => { if (b.dataset.word === correctWord) b.classList.add('correct'); });
         feedback.className = 'feedback feedback-wrong';
         feedback.textContent = `The answer is ${correctWord}!`;
+        // Speak the correct word after a short delay
+        setTimeout(function() { speakText(correctWord, 0.8, 1.1); }, 400);
       }
 
       updateScoreDisplay(tracker);
@@ -357,7 +422,7 @@
       setTimeout(() => {
         questionIndex++;
         showQuestion();
-      }, 1200);
+      }, 1800);
     }
   })();
   </script>

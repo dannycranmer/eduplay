@@ -146,6 +146,8 @@
     const RANGES = { easy: [2, 5], medium: [2, 9], hard: [2, 12] };
     let tracker, difficulty, timerInterval, timeLeft, currentQ;
 
+    showProgressStars('times-tables');
+
     const startBtn = document.getElementById('start-btn');
 
     document.getElementById('diff-selector').addEventListener('click', e => {
@@ -245,6 +247,14 @@
     }
 
     function endGame() {
+      // Save progress
+      if (difficulty) {
+        progressTracker.saveResult(
+          'times-tables', difficulty,
+          tracker.correct, tracker.total,
+          tracker.accuracy, tracker.bestStreak
+        );
+      }
       const area = document.getElementById('game-area');
       // Calculate speed
       const perMinute = tracker.total;

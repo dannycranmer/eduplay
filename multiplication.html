@@ -160,6 +160,8 @@
     const TOTAL_QUESTIONS = 10;
     let tracker, currentTable, questions, questionIndex;
 
+    showProgressStars('multiplication');
+
     // Table selector
     document.getElementById('table-selector').addEventListener('click', e => {
       const btn = e.target.closest('.diff-btn');
@@ -207,7 +209,7 @@
 
     function showQuestion() {
       if (questionIndex >= TOTAL_QUESTIONS) {
-        showResults(tracker, 'game-area');
+        showResults(tracker, 'game-area', 'multiplication', currentTable);
         return;
       }
       const q = questions[questionIndex];

@@ -152,6 +152,8 @@
     const RANGES = { easy: 10, medium: 50, hard: 100 };
     let tracker, difficulty, questions, qi;
 
+    showProgressStars('addition');
+
     document.getElementById('diff-selector').addEventListener('click', e => {
       const btn = e.target.closest('.diff-btn');
       if (!btn) return;
@@ -187,7 +189,7 @@
     }
 
     function showQ() {
-      if (qi >= TOTAL) { showResults(tracker, 'game-area'); return; }
+      if (qi >= TOTAL) { showResults(tracker, 'game-area', 'addition', difficulty); return; }
       const q = questions[qi];
       document.getElementById('progress').style.width = Math.round((qi / TOTAL) * 100) + '%';
 

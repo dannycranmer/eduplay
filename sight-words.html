@@ -300,6 +300,8 @@
 
     let tracker, questions, questionIndex, currentLevel, timedMode, hideTimeout;
 
+    showProgressStars('sight-words');
+
     document.getElementById('level-selector').addEventListener('click', e => {
       const btn = e.target.closest('.diff-btn');
       if (!btn) return;
@@ -341,7 +343,7 @@
     function showQuestion() {
       if (hideTimeout) clearTimeout(hideTimeout);
       if (questionIndex >= TOTAL_QUESTIONS) {
-        showResults(tracker, 'game-area');
+        showResults(tracker, 'game-area', 'sight-words', currentLevel);
         return;
       }
       const q = questions[questionIndex];

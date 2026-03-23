@@ -157,10 +157,88 @@ function updateScoreDisplay(tracker) {
   if (streakEl) streakEl.textContent = tracker.streak;
 }
 
-// Show results screen
-function showResults(tracker, containerId) {
+// Progress persistence via localStorage
+class ProgressTracker {
+  constructor() {
+    this._prefix = 'eduplay_progress_';
+  }
+
+  _key(game, level) {
+    return this._prefix + game + '_' + level;
+  }
+
+  saveResult(game, level, score, total, accuracy, streak) {
+    if (!game || !level) return;
+    try {
+      const key = this._key(game, level);
+      const existing = this.getProgress(game, level);
+      const record = {
+        gamesPlayed: (existing ? existing.gamesPlayed : 0) + 1,
+        bestScore: existing ? Math.max(existing.bestScore, score) : score,
+        bestAccuracy: existing ? Math.max(existing.bestAccuracy, accuracy) : accuracy,
+        bestStreak: existing ? Math.max(existing.bestStreak, streak) : streak,
+        lastPlayed: new Date().toISOString()
+      };
+      localStorage.setItem(key, JSON.stringify(record));
+    } catch (e) { /* localStorage blocked */ }
+  }
+
+  getProgress(game, level) {
+    try {
+      const data = localStorage.getItem(this._key(game, level));
+      return data ? JSON.parse(data) : null;
+    } catch (e) { return null; }
+  }
+
+  getAllProgress() {
+    const results = {};
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(this._prefix)) {
+          const suffix = key.slice(this._prefix.length);
+          results[suffix] = JSON.parse(localStorage.getItem(key));
+        }
+      }
+    } catch (e) { /* localStorage blocked */ }
+    return results;
+  }
+
+  getCompletedLevels(game) {
+    const completed = [];
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(this._prefix + game + '_')) {
+          const level = key.slice((this._prefix + game + '_').length);
+          const data = JSON.parse(localStorage.getItem(key));
+          if (data && data.bestAccuracy >= 70) {
+            completed.push(level);
+          }
+        }
+      }
+    } catch (e) { /* localStorage blocked */ }
+    return completed;
+  }
+}
+
+// Global progress tracker instance
+const progressTracker = new ProgressTracker();
+
+// Show results screen (gameName and levelName optional for backward compat)
+function showResults(tracker, containerId, gameName, levelName) {
   const container = document.getElementById(containerId);
   if (!container) return;
+
+  // Save progress if game/level provided
+  if (gameName && levelName) {
+    progressTracker.saveResult(
+      gameName, levelName,
+      tracker.correct, tracker.total,
+      tracker.accuracy, tracker.bestStreak
+    );
+  }
+
   container.innerHTML = `
     <div class="results-screen animate-slide-up">
       <div class="results-emoji">${tracker.getEmoji()}</div>
@@ -193,6 +271,63 @@ function showResults(tracker, containerId) {
       </div>
     </div>
   `;
+
+  // Update progress stars on difficulty buttons after saving
+  if (gameName) {
+    setTimeout(function() { showProgressStars(gameName); }, 100);
+  }
+}
+
+// Show gold stars next to difficulty buttons for completed levels
+function showProgressStars(gameName) {
+  const completed = progressTracker.getCompletedLevels(gameName);
+  if (!completed.length) return;
+  // Find all diff-btn / mode-btn elements and check their level/diff/mode/table attribute
+  document.querySelectorAll('.diff-btn, .mode-btn').forEach(function(btn) {
+    const level = btn.dataset.level || btn.dataset.diff || btn.dataset.mode || btn.dataset.table;
+    if (level && completed.indexOf(level) !== -1) {
+      // Don't add duplicate stars
+      if (!btn.querySelector('.progress-star')) {
+        const star = document.createElement('span');
+        star.className = 'progress-star';
+        star.textContent = '\u2B50';
+        star.style.cssText = 'margin-left:4px;font-size:0.85em;';
+        btn.appendChild(star);
+      }
+    }
+  });
+}
+
+// Show progress badges on index page game cards
+function showIndexProgressBadges() {
+  // Map game page hrefs to game names and their levels
+  const gameMap = {
+    'multiplication.html': { name: 'multiplication', levels: ['2','3','4','5','6','7','8','9','10','11','12','mix'] },
+    'division.html': { name: 'division', levels: ['easy','medium','hard'] },
+    'addition.html': { name: 'addition', levels: ['easy','medium','hard'] },
+    'number-bonds.html': { name: 'number-bonds', levels: ['easy','medium','hard'] },
+    'times-tables.html': { name: 'times-tables', levels: ['easy','medium','hard'] },
+    'fractions.html': { name: 'fractions', levels: ['name','compare','equivalent'] },
+    'counting.html': { name: 'counting', levels: ['objects','next','skip'] },
+    'phonics.html': { name: 'phonics', levels: ['easy','medium','hard'] },
+    'spelling.html': { name: 'spelling', levels: ['easy','medium','hard'] },
+    'sight-words.html': { name: 'sight-words', levels: ['pre-k','kindergarten','grade1'] },
+    'word-problems.html': { name: 'word-problems', levels: ['easy','medium','hard'] }
+  };
+
+  document.querySelectorAll('.game-card').forEach(function(card) {
+    const href = card.getAttribute('href');
+    const info = gameMap[href];
+    if (!info) return;
+    const completed = progressTracker.getCompletedLevels(info.name);
+    if (completed.length > 0) {
+      const badge = document.createElement('span');
+      badge.className = 'game-card-tag';
+      badge.style.cssText = 'background:#FEF3C7;color:#92400E;font-weight:700;';
+      badge.textContent = '\u2B50 ' + completed.length + '/' + info.levels.length + ' levels';
+      card.appendChild(badge);
+    }
+  });
 }
 
 // Desktop dropdown nav
@@ -227,4 +362,8 @@ function initDropdowns() {
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initDropdowns();
+  // Show progress badges on index page
+  if (document.querySelector('.game-grid')) {
+    showIndexProgressBadges();
+  }
 });

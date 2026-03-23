@@ -241,6 +241,8 @@
     const EMOJIS = ['⭐','🌟','💛','❤️','💜','🐟','🦋','🌸','🍎','🔵','🟢','🟡','🐢','🐱','🌺','🎈'];
     let tracker, mode, questions, qi;
 
+    showProgressStars('counting');
+
     document.getElementById('mode-selector').addEventListener('click', function(e) {
       var btn = e.target.closest('.mode-btn');
       if (!btn) return;
@@ -303,7 +305,7 @@
     }
 
     function showQ() {
-      if (qi >= TOTAL) { showResults(tracker, 'game-area'); return; }
+      if (qi >= TOTAL) { showResults(tracker, 'game-area', 'counting', mode); return; }
       var q = questions[qi];
       document.getElementById('progress').style.width = Math.round((qi / TOTAL) * 100) + '%';
 
