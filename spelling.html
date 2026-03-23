@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spelling Bee Game — Free Spelling Practice for Kids | EduPlay</title>
-  <meta name="description" content="Free spelling bee game for kids ages 4-12. See the word, memorize it, spell it from memory! Uses Dolch and Fry sight word lists. No accounts, no tracking.">
+  <meta name="description" content="Free spelling bee game for kids ages 4-12. See the word, memorize it, spell it from memory! Uses Dolch and Fry sight word lists. No accounts, no personal data collected.">
   <meta name="keywords" content="spelling bee game, spelling practice, sight words, Dolch words, Fry words, free spelling game, kids spelling">
   <meta property="og:title" content="Spelling Bee Game — EduPlay">
   <meta property="og:description" content="See the word, memorize it, spell it from memory! Free spelling bee practice for kids.">
@@ -182,7 +182,7 @@
         <a href="sight-words.html" class="mobile-nav-item"><span class="mobile-nav-item-icon">👁️</span><span class="mobile-nav-item-label">Sight Words</span></a>
       </div>
     </div>
-    <div class="mobile-nav-privacy">🛡️ No tracking · No accounts · 100% private</div>
+    <div class="mobile-nav-privacy">🛡️ No personal data collected · No accounts · Privacy-first</div>
   </nav>
 
   <div class="game-container">
@@ -473,10 +473,12 @@
       document.getElementById('submit-btn').disabled = true;
       updateScoreDisplay(tracker);
 
-      setTimeout(function() {
-        wordIndex++;
-        showWordPhase();
-      }, isCorrect ? 1200 : 2500);
+      var nextBtn = document.createElement('button');
+      nextBtn.className = 'next-btn';
+      nextBtn.textContent = 'Next →';
+      feedback.after(nextBtn);
+      var advTimer = setTimeout(function() { wordIndex++; showWordPhase(); }, isCorrect ? 1200 : 2500);
+      nextBtn.addEventListener('click', function() { clearTimeout(advTimer); wordIndex++; showWordPhase(); });
     }
   })();
   </script>

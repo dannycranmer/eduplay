@@ -726,6 +726,26 @@ header {
 .feedback-correct { color: #16A34A; }
 .feedback-wrong { color: #DC2626; }
 
+.next-btn {
+  display: inline-block;
+  margin-top: 0.7rem;
+  padding: 0.6rem 1.6rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family: inherit;
+  color: #fff;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(96,165,250,0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+  min-width: 100px;
+  min-height: 44px;
+}
+.next-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 14px rgba(96,165,250,0.4); }
+.next-btn:active { transform: translateY(0); }
+
 /* Primary action buttons */
 .btn {
   display: inline-flex;
