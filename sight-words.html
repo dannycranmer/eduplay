@@ -254,7 +254,43 @@
   (function() {
     const TOTAL_QUESTIONS = 10;
 
-    // --- Speech Synthesis (copied from phonics.html) ---
+    // --- Speech Synthesis with cached voice ---
+    var cachedVoice = null;
+    var voicesReady = false;
+
+    function pickBestVoice() {
+      var voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return null;
+      return voices.find(function(v) { return v.lang.startsWith('en') && v.name.toLowerCase().indexOf('female') !== -1; })
+          || voices.find(function(v) { return v.lang.startsWith('en'); })
+          || voices[0];
+    }
+
+    if ('speechSynthesis' in window) {
+      cachedVoice = pickBestVoice();
+      if (cachedVoice) voicesReady = true;
+
+      window.speechSynthesis.onvoiceschanged = function() {
+        cachedVoice = pickBestVoice();
+        voicesReady = true;
+        var msg = document.getElementById('audio-unavailable-msg');
+        if (msg) msg.remove();
+      };
+
+      setTimeout(function() {
+        if (!voicesReady) {
+          var area = document.getElementById('game-area');
+          if (area && !document.getElementById('audio-unavailable-msg')) {
+            var msg = document.createElement('div');
+            msg.id = 'audio-unavailable-msg';
+            msg.style.cssText = 'text-align:center;color:#b45309;background:#fef3c7;padding:0.5rem 1rem;border-radius:8px;margin:0.5rem auto;max-width:400px;font-size:0.9rem;font-weight:600;';
+            msg.textContent = 'Audio unavailable on this device';
+            area.parentNode.insertBefore(msg, area);
+          }
+        }
+      }, 2000);
+    }
+
     function speakText(text, rate, pitch) {
       try {
         if (!('speechSynthesis' in window)) return;
@@ -263,10 +299,7 @@
         utter.rate = rate || 0.8;
         utter.pitch = pitch || 1.1;
         utter.volume = 1;
-        var voices = window.speechSynthesis.getVoices();
-        var enVoice = voices.find(function(v) { return v.lang.startsWith('en') && v.name.toLowerCase().indexOf('female') !== -1; })
-                   || voices.find(function(v) { return v.lang.startsWith('en'); });
-        if (enVoice) utter.voice = enVoice;
+        if (cachedVoice) utter.voice = cachedVoice;
         window.speechSynthesis.speak(utter);
       } catch (e) { /* speech not available */ }
     }
